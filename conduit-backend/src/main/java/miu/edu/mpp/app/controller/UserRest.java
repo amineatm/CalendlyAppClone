@@ -3,7 +3,9 @@ package miu.edu.mpp.app.controller;
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import miu.edu.mpp.app.dto.user.*;
+import miu.edu.mpp.app.security.CurrentUser;
 import miu.edu.mpp.app.security.JwtUtil;
+import miu.edu.mpp.app.security.UserContext;
 import miu.edu.mpp.app.service.UserService;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -33,16 +35,18 @@ public class UserRest {
         return ResponseEntity.status(CREATED).body(userService.register(body.getUser()));
     }
 
-    @GetMapping("/user")
-    public ResponseEntity<UserRo> findMe(@AuthenticationPrincipal String email) throws NotFoundException {
+    @GetMapping()
+    public ResponseEntity<UserRo> findMe() throws NotFoundException {
         // email is extracted from the JWT by a Spring‑Security AuthenticationProvider
-        return ResponseEntity.ok(userService.findByEmail(email));
+        CurrentUser user = UserContext.get();
+        return ResponseEntity.ok(userService.findByEmail(user.getEmail()));
     }
 
-    @PutMapping("/user")
-    public ResponseEntity<UserRo> updateUser(@AuthenticationPrincipal String email,
+    @PutMapping()
+    public ResponseEntity<UserRo> updateUser(
                                              @RequestBody UpdateUserRequest request) throws NotFoundException {
-        return ResponseEntity.ok(userService.update(email, request));
+        CurrentUser user = UserContext.get();
+        return ResponseEntity.ok(userService.update(user.getEmail(), request));
     }
 
     @DeleteMapping("/users/{slug}")
