@@ -5,6 +5,7 @@ import miu.edu.mpp.app.dto.user.UserLoginRequest;
 import miu.edu.mpp.app.dto.user.UserLoginResponse;
 import miu.edu.mpp.app.dto.user.UserLoginWrapper;
 import miu.edu.mpp.app.dto.user.UserRegisterWrapper;
+import miu.edu.mpp.app.security.JwtUtil;
 import miu.edu.mpp.app.service.UserService;
 import static org.springframework.http.HttpStatus.CREATED;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import javax.validation.Valid;
 public class UserRest {
 
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
     @PostMapping("/login")
     public ResponseEntity<UserLoginResponse> login(@Valid @RequestBody UserLoginWrapper request) {

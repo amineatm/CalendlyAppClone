@@ -1,6 +1,8 @@
 # https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-2.5-Release-Notes
 #-Dfile.encoding=UTF-8
 #Application Configuration
+jwt:
+  secret: "mysupersecretkeythatshouldbe32bytes1234"
 server:
   port: 8092
   error:

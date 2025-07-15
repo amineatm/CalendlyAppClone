@@ -2,6 +2,7 @@ package miu.edu.mpp.app.controller;
 
 import lombok.RequiredArgsConstructor;
 import miu.edu.mpp.app.dto.article.*;
+import miu.edu.mpp.app.security.CurrentUser;
 import miu.edu.mpp.app.service.ArticleService;
 import static org.springframework.http.HttpStatus.CREATED;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import javax.validation.Valid;
 public class ArticleRest {
 
     private final ArticleService articleService;
+
 
     @PostMapping
     public ResponseEntity<ArticleCreateResponse> createArticle(
@@ -32,6 +34,7 @@ public class ArticleRest {
             @RequestParam(required = false) String favorited,
             @RequestParam(defaultValue = "20") int limit,
             @RequestParam(defaultValue = "0") int offset) {
+
 
         ArticleQueryParams params = ArticleQueryParams.builder()
                 .tag(tag)

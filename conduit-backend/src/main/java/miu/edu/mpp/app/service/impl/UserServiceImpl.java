@@ -8,6 +8,7 @@ import miu.edu.mpp.app.dto.user.UserRegisterRequest;
 import miu.edu.mpp.app.dto.user.UserResponse;
 import miu.edu.mpp.app.error.exception.BusinessException;
 import miu.edu.mpp.app.repository.UserRepository;
+import miu.edu.mpp.app.security.JwtUtil;
 import miu.edu.mpp.app.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,18 +20,20 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
 
     @Override
     public UserLoginResponse login(UserLoginRequest request) {
         User user = userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword())
                 .orElseThrow(() -> new ResponseStatusException(UNAUTHORIZED, "Invalid credentials"));
+        String  token= jwtUtil.generateToken(user);
 
         UserResponse userResponse = UserResponse.builder()
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .bio(user.getBio())
                 .image(user.getImage())
-                .token("IN BLANK")
+                .token(token)
                 .build();
 
         return new UserLoginResponse(userResponse);

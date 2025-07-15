@@ -51,9 +51,12 @@ public class User {
 
     @ManyToMany
     @JoinTable(name = "user_to_follower",
-            joinColumns = @JoinColumn(name = "follower_id"),
-            inverseJoinColumns = @JoinColumn(name = "following_id"))
-    private List<User> following;
+            joinColumns = @JoinColumn(name = "follower"),
+            inverseJoinColumns = @JoinColumn(name = "following"))
+    private List<User> following = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "following")
+    private List<User> followers = new ArrayList<>();
 
     @Override
     public String toString() {
