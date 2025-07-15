@@ -25,7 +25,7 @@ public class ProfileServiceImpl implements ProfileService {
 
     @Override
     public ProfileResponse findProfile(Long followerId, String username) {
-        User following = userRepository.findByUsernameWithFollowers(username)
+        User following = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User cannot be found"));
 
         User follower = entityManager.getReference(User.class, followerId);
@@ -42,10 +42,10 @@ public class ProfileServiceImpl implements ProfileService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Follower email and username not provided.");
         }
 
-        User following = userRepository.findByUsernameWithFollowers(username)
+        User following = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User to follow not found"));
 
-        User follower = userRepository.findByEmail(followerEmail)
+        User follower = (User) userRepository.findByEmail(followerEmail)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Follower user not found"));
 
         if (follower.getEmail().equals(following.getEmail())) {
@@ -66,7 +66,7 @@ public class ProfileServiceImpl implements ProfileService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "FollowerId and username not provided.");
         }
 
-        User following = userRepository.findByUsernameWithFollowers(username)
+        User following = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User to unfollow not found"));
 
         User follower = entityManager.getReference(User.class, followerId);
