@@ -1,7 +1,7 @@
 package miu.edu.mpp.app.repository;
 
-
 import miu.edu.mpp.app.domain.User;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,7 +10,14 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
     Optional<User> findByEmailAndPassword(String email, String password);
+
+    @EntityGraph(attributePaths = "followers")
+    Optional<User> findByUsername(String username);
+
+
+    Optional<User> findByEmail(String email);
 
     boolean existsByEmail(String email);
 
@@ -18,9 +25,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     List<User> findByEmailIn(List<String> emails);
 
-    Optional<User> findByEmail(String email);
-
     void deleteByEmail(String email);
 
-    Optional<User> findByUsername(String username);
 }

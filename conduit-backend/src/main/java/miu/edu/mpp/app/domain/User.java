@@ -1,17 +1,19 @@
 package miu.edu.mpp.app.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.*;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "user")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class User {
 
     @Id
