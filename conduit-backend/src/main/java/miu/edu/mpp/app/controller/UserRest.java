@@ -2,13 +2,12 @@ package miu.edu.mpp.app.controller;
 
 import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
-import miu.edu.mpp.app.dto.user.UserLoginRequest;
-import miu.edu.mpp.app.dto.user.UserLoginResponse;
-import miu.edu.mpp.app.dto.user.UserLoginWrapper;
-import miu.edu.mpp.app.dto.user.UserRegisterWrapper;
+import miu.edu.mpp.app.dto.user.*;
 import miu.edu.mpp.app.security.JwtUtil;
 import miu.edu.mpp.app.service.UserService;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +25,7 @@ public class UserRest {
 
     @PostMapping("/login")
     public ResponseEntity<UserLoginResponse> login(@Valid @RequestBody UserLoginWrapper request) {
-        return ResponseEntity.status(201).body(userService.login(request.getUser()));
+        return ResponseEntity.status(OK).body(userService.login(request.getUser()));
     }
 
     @PostMapping

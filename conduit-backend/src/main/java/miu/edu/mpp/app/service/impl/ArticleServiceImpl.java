@@ -144,7 +144,6 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         if (p.getAuthor() != null) {
-            // si autor no existe => respuesta vacía rápido
             if (userRepository.findByUsername(p.getAuthor()).isEmpty()) {
                 return new ArticleListResponse(List.of(), 0);
             }
