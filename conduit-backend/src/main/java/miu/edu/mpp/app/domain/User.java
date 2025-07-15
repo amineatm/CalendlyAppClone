@@ -48,4 +48,24 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "article_id")
     )
     private Set<Article> favoriteArticles = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "user_to_follower",
+            joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "following_id"))
+    private List<User> following;
+
+    @Override
+    public String toString() {
+        return " User: {" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", bio='" + bio + '\'' +
+                ", image='" + image + '\'' +
+                ", password='" + password + '\'' +
+                ", contributedArticles=" + contributedArticles +
+                ", favoriteArticles=" + favoriteArticles +
+                "}";
+    }
 }
