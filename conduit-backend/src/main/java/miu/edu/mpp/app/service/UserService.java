@@ -2,12 +2,13 @@ package miu.edu.mpp.app.service;
 
 
 
-import miu.edu.mpp.app.dto.user.UserLoginRequest;
-import miu.edu.mpp.app.dto.user.UserLoginResponse;
-import miu.edu.mpp.app.dto.user.UserRegisterRequest;
+import javassist.NotFoundException;
+import miu.edu.mpp.app.dto.user.*;
 
 public interface UserService {
     UserLoginResponse login(UserLoginRequest request);
     UserLoginResponse register(UserRegisterRequest request);
-
+    UserRo findByEmail(String email) throws NotFoundException;
+    UserRo update(String email, UpdateUserRequest dto) throws NotFoundException;
+    void delete(String email);
 }
