@@ -3,6 +3,7 @@ package miu.edu.mpp.app.controller;
 import lombok.RequiredArgsConstructor;
 import miu.edu.mpp.app.dto.article.*;
 import miu.edu.mpp.app.security.CurrentUser;
+import miu.edu.mpp.app.security.UserContext;
 import miu.edu.mpp.app.service.ArticleService;
 import static org.springframework.http.HttpStatus.CREATED;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,7 @@ public class ArticleRest {
             @RequestParam(required = false) String favorited,
             @RequestParam(defaultValue = "20") int limit,
             @RequestParam(defaultValue = "0") int offset) {
+        CurrentUser user = UserContext.get();
 
 
         ArticleQueryParams params = ArticleQueryParams.builder()
@@ -44,7 +46,7 @@ public class ArticleRest {
                 .offset(offset)
                 .build();
 
-        ArticleListResponse response = articleService.listArticles(1L, params);
+        ArticleListResponse response = articleService.listArticles(user.getId(), params);
         return ResponseEntity.ok(response);
     }
 
@@ -53,8 +55,8 @@ public class ArticleRest {
             @RequestParam(defaultValue = "20") int limit,
             @RequestParam(defaultValue = "0") int offset
     ) {
-        Long currentUserId = 1L;
-        ArticleFeedResponse response = articleService.getFeedForUser(currentUserId, limit, offset);
+        CurrentUser user = UserContext.get();
+        ArticleFeedResponse response = articleService.getFeedForUser(user.getId(), limit, offset);
         return ResponseEntity.ok(response);
     }
 }
