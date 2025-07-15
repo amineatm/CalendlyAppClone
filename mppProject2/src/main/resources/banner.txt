@@ -1,0 +1,10 @@
+░███     ░███░██████░██     ░██
+░████   ░████  ░██  ░██     ░██
+░██░██ ░██░██  ░██  ░██     ░██
+░██ ░████ ░██  ░██  ░██     ░██
+░██  ░██  ░██  ░██  ░██     ░██
+░██       ░██  ░██   ░██   ░██
+░██       ░██░██████  ░██████
+
+:: Spring Boot ${spring-boot.formatted-version}
+:: ${application.projectName} (${application.projectVersion})

@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  mysql57:
+    image: ghcr.io/yumemi-inc/mysql:5.7
+    container_name: mysql57
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: conduit
+      MYSQL_DATABASE: conduit
+      MYSQL_USER: conduit
+      MYSQL_PASSWORD: conduit
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql57_data:/var/lib/mysql
+
+volumes:
+  mysql57_data:
