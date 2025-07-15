@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserRo findByEmail(String email) throws NotFoundException {
-        User user = userRepository.findByEmail(email)
+        User user = (User) userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found"));
         return new UserRo(user.getUsername(), user.getEmail(), user.getBio(), user.getImage(), null);
     }
@@ -77,7 +77,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserRo update(String email, UpdateUserRequest dto) throws NotFoundException {
-        User user = userRepository.findByEmail(email)
+        User user = (User) userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("User not found"));
 
         if (dto.getUsername() != null) user.setUsername(dto.getUsername());
