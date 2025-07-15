@@ -1,16 +1,17 @@
 package miu.edu.mpp.app.service.impl;
 
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import miu.edu.mpp.app.domain.User;
-import miu.edu.mpp.app.dto.user.UserLoginRequest;
-import miu.edu.mpp.app.dto.user.UserLoginResponse;
-import miu.edu.mpp.app.dto.user.UserRegisterRequest;
-import miu.edu.mpp.app.dto.user.UserResponse;
+import miu.edu.mpp.app.dto.user.*;
 import miu.edu.mpp.app.error.exception.BusinessException;
 import miu.edu.mpp.app.repository.UserRepository;
 import miu.edu.mpp.app.service.UserService;
+import miu.edu.mpp.app.util.HashUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import javax.transaction.Transactional;
 
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -19,6 +20,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
 
     @Override
     public UserLoginResponse login(UserLoginRequest request) {
@@ -63,6 +65,32 @@ public class UserServiceImpl implements UserService {
                 .build();
 
         return new UserLoginResponse(response);
+    }
+
+    @Override
+    public UserRo findByEmail(String email) throws NotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+        return new UserRo(user.getUsername(), user.getEmail(), user.getBio(), user.getImage(), null);
+    }
+
+    @Override
+    @Transactional
+    public UserRo update(String email, UpdateUserRequest dto) throws NotFoundException {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        if (dto.getUsername() != null) user.setUsername(dto.getUsername());
+        if (dto.getBio() != null) user.setBio(dto.getBio());
+        if (dto.getImage() != null) user.setImage(dto.getImage());
+        if (dto.getPassword() != null) user.setPassword(HashUtil.sha256(dto.getPassword()));
+
+        return new UserRo(user.getUsername(), user.getEmail(), user.getBio(), user.getImage(), null);
+    }
+
+    @Override
+    public void delete(String email) {
+        userRepository.deleteByEmail(email);
     }
 
 }

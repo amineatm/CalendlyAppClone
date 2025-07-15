@@ -17,11 +17,10 @@ spring:
   # DB
   # ===============================
   datasource:
-    url: jdbc:mysql://localhost:3307/conduit?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/conduit_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: conduit
-    password: conduit
-    platform: mysql
+    username: root
+    password: 123456
 
   # ===============================
   # JPA / HIBERNATE
