@@ -17,6 +17,6 @@ public interface ArticleService {
 
     ArticleWrapper favorite(Long userId, String slug);
     ArticleWrapper unFavorite(Long userId, String slug);
-
+    ArticleDTOResponse<ArticleDto> getArticleBySlug(String slug, CurrentUser currentUser);
 
 }

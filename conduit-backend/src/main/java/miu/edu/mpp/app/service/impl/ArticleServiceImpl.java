@@ -21,15 +21,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
-import javax.management.Query;
 import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -298,5 +297,61 @@ public class ArticleServiceImpl implements ArticleService {
         ArticleResponse response = toArticleResponse(article, false);
         return new ArticleWrapper(response);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ArticleDTOResponse<ArticleDto> getArticleBySlug(String slug, CurrentUser currentUser) {
+        Article article = articleRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Article not found"));
+
+        User author = article.getAuthor();
+
+        // current user following author's article?
+        boolean following = author.getFollowers().stream()
+                .anyMatch(f -> f.getId().equals(currentUser.getId()));
+
+        // does user favorite  articles?
+//        boolean favorited = favoriteRepository.existsByArticleIdAndUserId(article.getId(), currentUser.getId());
+
+        // Map comments to DTO
+//        List<CommentDto> comments = article.getComments().stream()
+//                .map(comment -> new CommentDto(
+//                        comment.getId(),
+//                        comment.getBody(),
+//                        comment.getCreatedAt(),
+//                        comment.getUpdatedAt(),
+//                        comment.getAuthor().getId()))
+//                .toList();
+
+        // Construir respuesta
+        AuthorDto authorDto = new AuthorDto(
+                author.getId(),
+                author.getUsername(),
+                author.getBio(),
+                author.getImage(),
+                following,
+                author.getEmail());
+
+        return new ArticleDTOResponse(ArticleDto.builder()
+                .id(article.getId())
+                .slug(article.getSlug())
+                .title(article.getTitle())
+                .description(article.getDescription())
+                .body(article.getBody())
+                .createdAt(article.getCreatedAt())
+                .updatedAt(article.getUpdatedAt())
+                .tagList(Arrays.stream(article.getTagList().split(",")).toList())
+                .author(authorDto)
+                .favoritesCount(article.getFavoritesCount())
+                .lockedAt(article.getLockedAt())
+                .lockedBy(null)
+//                .comments(comments)
+//                .favorited(favorited)
+                .authors(List.of())  // ← si tienes coautores, agrégalos aquí
+                .collaboratorList(List.of())
+                .islocked(article.getLockedAt() != null)
+                .build());
+    }
+
 
 }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -87,5 +88,21 @@ public class ArticleRest {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("{slug}")
+    public ResponseEntity<ArticleDTOResponse<ArticleDto>> getArticleBySlug(
+            @PathVariable String slug
+            ) {
+        CurrentUser user = UserContext.get();
+        ArticleDTOResponse<ArticleDto> response = articleService.getArticleBySlug(slug, user);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("{slug}/comments")
+    public ResponseEntity<List> getArticleBySlugComments(
+            @PathVariable String slug
+            ) {
+        CurrentUser user = UserContext.get();
+        return ResponseEntity.ok(List.of());
+    }
 
 }

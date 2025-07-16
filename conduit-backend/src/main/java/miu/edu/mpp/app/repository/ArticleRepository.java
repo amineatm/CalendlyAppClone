@@ -39,7 +39,7 @@ public interface ArticleRepository extends JpaRepository<Article,Long>, JpaSpeci
     @Query("SELECT a FROM Article a WHERE a.tagList LIKE %:tag%")
     Page<Article> findByTagContaining(@Param("tag") String tag, Pageable pageable);
 
-    Optional<Object> findBySlug(String slug);
+    Optional<Article> findBySlug(String slug);
 
 
     @Query("SELECT a FROM Article a " +
