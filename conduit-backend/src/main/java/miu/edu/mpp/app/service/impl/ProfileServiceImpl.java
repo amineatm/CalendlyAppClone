@@ -8,6 +8,7 @@ import miu.edu.mpp.app.domain.User;
 import miu.edu.mpp.app.dto.profile.ProfileDto;
 import miu.edu.mpp.app.dto.profile.ProfileResponse;
 import miu.edu.mpp.app.repository.UserRepository;
+import miu.edu.mpp.app.security.CurrentUser;
 import miu.edu.mpp.app.service.ProfileService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -36,50 +38,68 @@ public class ProfileServiceImpl implements ProfileService {
         return new ProfileResponse(profile);
     }
 
+    /**
+     * Following is the process of a user subscribing to another user's updates.
+     * Follower is the user who wants to follow another user.
+     * @param followingEmail
+     * @param usernameFollower
+     * @return
+     */
     @Override
     @Transactional
-    public ProfileResponse follow(String followerEmail, String username) {
-        if (followerEmail == null || username == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Follower email and username not provided.");
-        }
-
-        User following = userRepository.findByUsername(username)
+    public ProfileResponse follow(CurrentUser followingEmail, String usernameFollower) {
+        User following = userRepository.findByUsername(followingEmail.getUsername())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User to follow not found"));
 
-        User follower = (User) userRepository.findByEmail(followerEmail)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Follower user not found"));
-
-        if (follower.getEmail().equals(following.getEmail())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot follow yourself.");
+        if (following.getUsername().equals(usernameFollower)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot follow yourself.");
         }
 
-        //follower.getFollowers().add(following);
-        entityManager.flush();
+        User follower = userRepository.findByUsername(usernameFollower)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Follower user not found"));
 
-        ProfileDto profile = new ProfileDto(following.getUsername(), following.getBio(), following.getImage(), true);
+        // add the following user to the follower's followers list
+//        var test = following.
+        follower.getFollowers().add(following);
+        userRepository.save(follower);
+
+        ProfileDto profile = new ProfileDto(follower.getUsername(), follower.getBio(), follower.getImage(), true);
         return new ProfileResponse(profile);
     }
 
     @Override
     @Transactional
-    public ProfileResponse unfollow(Long followerId, String username) {
-        if (followerId == null || username == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "FollowerId and username not provided.");
+    public ProfileResponse unfollow(CurrentUser userContext, String username) {
+        if (userContext == null || username == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Current user and username must be provided.");
         }
 
-        User following = userRepository.findByUsername(username)
+        // Usuario logueado (yo, el que sigue)
+        User currentUser = userRepository.findByUsername(userContext.getUsername())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Logged in user not found"));
+
+        // Usuario al que quiero dejar de seguir
+        User toUnfollow = userRepository.findByUsername(username)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "User to unfollow not found"));
 
-        User follower = entityManager.getReference(User.class, followerId);
-
-        if (following.getId().equals(followerId)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot unfollow yourself.");
+        if (currentUser.getId().equals(toUnfollow.getId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot unfollow yourself.");
         }
 
-        //following.getFollowers().remove(follower);
-        entityManager.flush();
+        List<User> test = currentUser.getFollowers();
+        List<User> test2 = toUnfollow.getFollowers();
+        System.out.println(entityManager.contains(currentUser)); // debería ser true
 
-        ProfileDto profile = new ProfileDto(following.getUsername(), following.getBio(), following.getImage(), false);
+        // Aquí eliminamos la relación desde el lado propietario
+        boolean removed = toUnfollow.getFollowers().removeIf(user -> user.getId().equals(currentUser.getId()));
+
+        if (removed) {
+//          userRepository.save(currentUser); // persistimos el cambio
+            entityManager.merge(toUnfollow);
+            entityManager.flush();
+        }
+
+        ProfileDto profile = new ProfileDto(toUnfollow.getUsername(), toUnfollow.getBio(), toUnfollow.getImage(), false);
         return new ProfileResponse(profile);
     }
 

@@ -13,6 +13,7 @@ import miu.edu.mpp.app.repository.ArticleRepository;
 import miu.edu.mpp.app.repository.TagRepository;
 import miu.edu.mpp.app.repository.UserRepository;
 import miu.edu.mpp.app.repository.spec.ArticleSpecifications;
+import miu.edu.mpp.app.security.CurrentUser;
 import miu.edu.mpp.app.security.JwtUtil;
 import miu.edu.mpp.app.service.ArticleService;
 import miu.edu.mpp.app.util.SlugUtil;
@@ -44,7 +45,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
-    public ArticleCreateResponse createArticle(ArticleCreateRequest req) {
+    public ArticleCreateResponse createArticle(CurrentUser userLogin, ArticleCreateRequest req) {
 
         // ---------- Tags ----------
         String tagsConcatenados = Optional.ofNullable(req.getTagList())
@@ -75,7 +76,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .collect(Collectors.toList());
         // ---------- Author ----------
         User author = userRepository
-                .findById(1L)
+                .findById(userLogin.getId())
                 .orElseThrow(() -> new RuntimeException("Author not found"));
         // ---------- Article ----------
         Article article = new Article();
@@ -116,7 +117,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .body(article.getBody())
                 .createdAt(article.getCreatedAt())
                 .updatedAt(article.getUpdatedAt())
-                .tagList(tags.stream().map(Tag::getName).collect(Collectors.toList()))
+                .tagList(Arrays.stream(article.getTagList().split(",")).toList())
                 .favoritesCount(0)
                 .author(/* map principal author si aplica */ null)
                 .favorited(false)
@@ -182,10 +183,6 @@ public class ArticleServiceImpl implements ArticleService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-//        Page<Article> articles = articleRepository.findArticlesByFollowedUsers(
-//                userId,
-//                PageRequest.of(offset / limit, limit, Sort.by(Sort.Direction.DESC, "createdAt"))
-//        );
         List<User> following = user.getFollowing();
         if (following.isEmpty()) {
             return new ArticleFeedResponse(List.of(), 0);
@@ -205,7 +202,7 @@ public class ArticleServiceImpl implements ArticleService {
                         .body(article.getBody())
                         .createdAt(article.getCreatedAt())
                         .updatedAt(article.getUpdatedAt())
-                        .tagList(article.getTags().stream().map(Tag::getName).toList())
+                        .tagList(Arrays.stream(article.getTagList().split(",")).toList())
                         .favoritesCount(article.getFavoritesCount())
 //                        .favoritesCount(article.getFavoritedBy() != null ? article.getFavoritedBy().size() : 0)
                         .author(toUserResponse(article.getAuthor()))

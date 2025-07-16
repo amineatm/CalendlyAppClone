@@ -24,9 +24,10 @@ public class ArticleRest {
     @PostMapping
     public ResponseEntity<ArticleCreateResponse> createArticle(
             @Valid @RequestBody ArticleCreateWrapper wrapper) {
+        CurrentUser user = UserContext.get();
 
         ArticleCreateResponse response =
-                articleService.createArticle(wrapper.getArticle());
+                articleService.createArticle(user, wrapper.getArticle());
 
         return ResponseEntity.status(CREATED).body(response);
     }

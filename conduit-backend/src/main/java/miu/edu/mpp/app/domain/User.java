@@ -5,10 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "user")
@@ -51,16 +48,16 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "article_id")
     )
     private Set<Article> favoriteArticles = new HashSet<>();
-
     @ManyToMany
-    @JoinTable(name = "user_to_follower",
-            joinColumns = @JoinColumn(name = "follower"),
-            inverseJoinColumns = @JoinColumn(name = "following"))
-    private List<User> following = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "following")
+    @JoinTable(
+            name = "user_to_follower",
+            joinColumns = @JoinColumn(name = "following"), // I'm the one following
+            inverseJoinColumns = @JoinColumn(name = "follower") // the one being followed
+    )
     private List<User> followers = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "followers")
+    private List<User> following = new ArrayList<>();
     @Override
     public String toString() {
         return " User: {" +
@@ -73,5 +70,18 @@ public class User {
                 ", contributedArticles=" + contributedArticles +
                 ", favoriteArticles=" + favoriteArticles +
                 "}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return id != null && id.equals(user.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
