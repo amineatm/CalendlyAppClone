@@ -13,6 +13,7 @@ import miu.edu.mpp.app.repository.ArticleRepository;
 import miu.edu.mpp.app.repository.TagRepository;
 import miu.edu.mpp.app.repository.UserRepository;
 import miu.edu.mpp.app.repository.spec.ArticleSpecifications;
+import miu.edu.mpp.app.security.JwtUtil;
 import miu.edu.mpp.app.service.ArticleService;
 import miu.edu.mpp.app.util.SlugUtil;
 import org.springframework.data.domain.Page;
@@ -39,6 +40,7 @@ public class ArticleServiceImpl implements ArticleService {
     private final UserRepository userRepository;
     private final ArticleAuthorRepository articleAuthorRepository;
     private final EntityManager entityManager;
+    private final JwtUtil jwtUtil;
 
     @Override
     @Transactional
@@ -202,7 +204,7 @@ public class ArticleServiceImpl implements ArticleService {
                         .createdAt(article.getCreatedAt())
                         .updatedAt(article.getUpdatedAt())
                         .tagList(article.getTags().stream().map(Tag::getName).toList())
-//                        .favoritesCount(article.getFavoritedBy().size())
+                        .favoritesCount(article.getFavoritesCount())
                         .author(toUserResponse(article.getAuthor()))
                         .favorited(false)
 //                        .authors(List.of())
@@ -215,47 +217,7 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
 
-    @Override
-    @Transactional
-    public RoasterResponse findRoasters(Map<String, String> query) {
-        // ---------- 0. Build the SQL query ----------
-        StringBuilder sql = new StringBuilder();
-        sql.append("SELECT u.id, u.username, ");
-        sql.append("COUNT(DISTINCT a.id) AS totalArticlesWritten, ");
-        sql.append("COALESCE(COUNT(uf.article_id), 0) AS totalLikesReceived, ");
-        sql.append("MIN(a.created_at) AS firstArticleDate ");
-        sql.append("FROM users u ");
-        sql.append("LEFT JOIN articles a ON a.author_id = u.id ");
-        sql.append("LEFT JOIN user_favorites uf ON uf.article_id = a.id ");
-        sql.append("GROUP BY u.id, u.username ");
 
-        // ---------- 1. Handle query parameters like limit and offset ----------
-        if (query.containsKey("limit")) {
-            sql.append("LIMIT ").append(query.get("limit"));
-        }
-
-        if (query.containsKey("offset")) {
-            sql.append("OFFSET ").append(query.get("offset"));
-        }
-
-        // ---------- 2. Run the query ----------
-        TypedQuery<Object[]> nativeQuery = (TypedQuery<Object[]>) entityManager.createNativeQuery(sql.toString(), Object[].class);
-        List<Object[]> result = nativeQuery.getResultList();  // getResultList() works here
-
-        // ---------- 3. Map query results to RoasterUserArticleDto ----------
-        List<RoasterUserArticle> roasters = result.stream()
-                .map(obj -> new RoasterUserArticle(
-                        ((Number) obj[0]).longValue(),         // user id
-                        (String) obj[1],                      // username
-                        ((Number) obj[2]).longValue(),        // total articles written
-                        ((Number) obj[3]).longValue(),        // total likes received
-                        (String) obj[4]                       // first article date
-                ))
-                .collect(Collectors.toList());
-
-        // ---------- 4. Wrap the results in a RoasterResponse and return ----------
-        return new RoasterResponse(roasters);
-    }
 
     private UserResponse toUserResponse(User user) {
         return UserResponse.builder()
@@ -264,6 +226,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .email(user.getEmail())
                 .bio(user.getBio())
                 .image(user.getImage())
+                .token(jwtUtil.generateToken(user))
                 .following(false)  // You can modify this logic if needed
                 .build();
     }
@@ -290,5 +253,32 @@ public class ArticleServiceImpl implements ArticleService {
                 .author(author)
                 .build();
     }
+
+    @Override
+    public List<RoasterUserArticle> findRoasterUsers(int limit, int offset) {
+        return articleRepository.findRoasterUsers(limit, offset);
+    }
+
+    @Override
+    @Transactional
+    public ArticleWrapper favorite(Long userId, String slug) {
+        Article article = (Article) articleRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Article not found"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!article.getFavoredByUsers().contains(user)) {
+            article.getFavoredByUsers().add(user);
+            article.setFavoritesCount(article.getFavoritesCount() + 1);
+            articleRepository.save(article);
+        }
+
+        userRepository.saveAndFlush(user);
+
+        ArticleResponse response = toArticleResponse(article, true);
+        return new ArticleWrapper(response);
+    }
+
 
 }

@@ -3,7 +3,6 @@ package miu.edu.mpp.app.service;
 import miu.edu.mpp.app.dto.article.*;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ArticleService {
     ArticleCreateResponse createArticle(ArticleCreateRequest request);
@@ -12,6 +11,10 @@ public interface ArticleService {
 
     ArticleFeedResponse getFeedForUser(Long userId, int limit, int offset);
 
-    RoasterResponse findRoasters(Map<String, String> query);
+    List<RoasterUserArticle> findRoasterUsers(int limit, int offset);
+
+    ArticleWrapper favorite(Long userId, String slug);
+    //void unfavorite(Long userId, String slug);
+
 
 }

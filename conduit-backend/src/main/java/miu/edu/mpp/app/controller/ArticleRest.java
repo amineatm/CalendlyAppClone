@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -65,7 +64,27 @@ public class ArticleRest {
     }
 
     @GetMapping("/roaster")
-    public RoasterResponse findRoasters(@RequestParam Map<String, String> query) {
-        return articleService.findRoasters(query);
+    public ResponseEntity<Map<String, Object>> getRoasterUsers(
+            @RequestParam(defaultValue = "20") int limit,
+            @RequestParam(defaultValue = "0") int offset) {
+
+        var roaster = articleService.findRoasterUsers(limit, offset);
+        return ResponseEntity.ok(Map.of("roaster", roaster));
     }
+
+    @PostMapping("/{slug}/favorite")
+    public ResponseEntity<ArticleResponse> favoriteArticle(@PathVariable String slug) {
+        CurrentUser user = UserContext.get();
+        ArticleResponse response = articleService.favorite(user.getId(), slug).getArticle();
+        return ResponseEntity.ok(response);
+    }
+
+//    @DeleteMapping("/{slug}/favorite")
+//    public ResponseEntity<?> unfavorite(@PathVariable String slug) {
+//        CurrentUser user = UserContext.get();
+//        articleService.unfavorite(user.getId(), slug);
+//        return ResponseEntity.ok().build();
+//    }
+
+
 }
