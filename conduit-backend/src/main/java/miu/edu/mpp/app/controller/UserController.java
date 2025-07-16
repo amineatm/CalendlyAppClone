@@ -4,7 +4,6 @@ import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import miu.edu.mpp.app.dto.user.*;
 import miu.edu.mpp.app.security.CurrentUser;
-import miu.edu.mpp.app.security.JwtUtil;
 import miu.edu.mpp.app.security.UserContext;
 import miu.edu.mpp.app.service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -19,10 +18,9 @@ import static org.springframework.http.HttpStatus.OK;
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-public class UserRest {
+public class UserController {
 
     private final UserService userService;
-    private final JwtUtil jwtUtil;
 
     @PostMapping("/login")
     public ResponseEntity<UserLoginResponse> login(@Valid @RequestBody UserLoginWrapper request) {
@@ -51,7 +49,7 @@ public class UserRest {
     @DeleteMapping("/users/{slug}")
     public ResponseEntity<Void> deleteUser(@PathVariable String slug) {
         userService.delete(slug);
-        return ResponseEntity.noContent().build(); // returns 204 No Content
+        return ResponseEntity.noContent().build();
     }
 
 

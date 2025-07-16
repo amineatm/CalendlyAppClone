@@ -17,7 +17,7 @@ import static org.springframework.http.HttpStatus.CREATED;
 @RestController
 @RequestMapping("/api/articles")
 @RequiredArgsConstructor
-public class ArticleRest {
+public class ArticleController {
 
     private final ArticleService articleService;
 
