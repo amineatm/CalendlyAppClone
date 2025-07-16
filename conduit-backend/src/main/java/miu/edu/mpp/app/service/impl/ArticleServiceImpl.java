@@ -13,6 +13,7 @@ import miu.edu.mpp.app.repository.ArticleRepository;
 import miu.edu.mpp.app.repository.TagRepository;
 import miu.edu.mpp.app.repository.UserRepository;
 import miu.edu.mpp.app.repository.spec.ArticleSpecifications;
+import miu.edu.mpp.app.security.JwtUtil;
 import miu.edu.mpp.app.service.ArticleService;
 import miu.edu.mpp.app.util.SlugUtil;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.management.Query;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
@@ -35,6 +39,8 @@ public class ArticleServiceImpl implements ArticleService {
     private final TagRepository tagRepository;
     private final UserRepository userRepository;
     private final ArticleAuthorRepository articleAuthorRepository;
+    private final EntityManager entityManager;
+    private final JwtUtil jwtUtil;
 
     @Override
     @Transactional
@@ -124,16 +130,16 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleListResponse listArticles(Long currentUserId, ArticleQueryParams p) {
         // ---------- 0. usuario actual (para marcar 'favorited') ----------
-        Set<Long> favoritesOfCurrent = Set.of();
+        Set<Long> favoritesOfCurrent = new HashSet<>();
         User userInfo;
         if (currentUserId != null) {
             userInfo = userRepository
                     .findById(1L)
                     .orElseThrow(() -> new RuntimeException("Author not found"));
 
-//           favoritesOfCurrent.addAll(
-//                   userInfo.getFavoriteArticles().stream().map(Article::getId).collect(Collectors.toSet())
-//           );
+           favoritesOfCurrent.addAll(
+                   userInfo.getFavoriteArticles().stream().map(Article::getId).collect(Collectors.toSet())
+           );
         }
 
 
@@ -157,7 +163,6 @@ public class ArticleServiceImpl implements ArticleService {
             spec = spec.and(ArticleSpecifications.favoritedByUsername(p.getFavorited()));
         }
 
-        // ---------- 2. consulta paginada ----------
         PageRequest pageReq = PageRequest.of(
                 p.getOffset() / p.getLimit(),
                 p.getLimit(),
@@ -165,7 +170,6 @@ public class ArticleServiceImpl implements ArticleService {
 
         Page<Article> page = articleRepository.findAll(spec, pageReq);
 
-        // ---------- 3. mapeo a DTO ----------
         List<ArticleResponse> responses = page.getContent().stream()
                 .map(a -> toArticleResponse(a, favoritesOfCurrent.contains(a.getId())))
                 .collect(Collectors.toList());
@@ -178,8 +182,17 @@ public class ArticleServiceImpl implements ArticleService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        Page<Article> articles = articleRepository.findArticlesByFollowedUsers(
-                userId,
+//        Page<Article> articles = articleRepository.findArticlesByFollowedUsers(
+//                userId,
+//                PageRequest.of(offset / limit, limit, Sort.by(Sort.Direction.DESC, "createdAt"))
+//        );
+        List<User> following = user.getFollowing();
+        if (following.isEmpty()) {
+            return new ArticleFeedResponse(List.of(), 0);
+        }
+
+        Page<Article> articles = articleRepository.findByAuthorsIn(
+                following,
                 PageRequest.of(offset / limit, limit, Sort.by(Sort.Direction.DESC, "createdAt"))
         );
 
@@ -193,15 +206,21 @@ public class ArticleServiceImpl implements ArticleService {
                         .createdAt(article.getCreatedAt())
                         .updatedAt(article.getUpdatedAt())
                         .tagList(article.getTags().stream().map(Tag::getName).toList())
+                        .favoritesCount(article.getFavoritesCount())
 //                        .favoritesCount(article.getFavoritedBy() != null ? article.getFavoritedBy().size() : 0)
                         .author(toUserResponse(article.getAuthor()))
                         .favorited(false)
-//                        .islocked(article.getIsLocked())
+//                        .authors(List.of())
+//                        .collaboratorList(List.of())
+//                        .comments(List.of())
                         .build())
                 .toList();
 
         return new ArticleFeedResponse(responseList, articles.getTotalElements());
     }
+
+
+
 
     private UserResponse toUserResponse(User user) {
         return UserResponse.builder()
@@ -210,10 +229,10 @@ public class ArticleServiceImpl implements ArticleService {
                 .email(user.getEmail())
                 .bio(user.getBio())
                 .image(user.getImage())
-                .following(false)
+                .token(jwtUtil.generateToken(user))
+                .following(false)  // You can modify this logic if needed
                 .build();
     }
-
 
     private ArticleResponse toArticleResponse(Article a, boolean isFavorited) {
         UserResponse author = UserResponse.builder()
@@ -233,10 +252,56 @@ public class ArticleServiceImpl implements ArticleService {
                 .createdAt(a.getCreatedAt())
                 .updatedAt(a.getUpdatedAt())
                 .tagList(Arrays.stream(a.getTagList().split(",")).toList())
-//                .favoritesCount(a.getFavoritedBy().size())
                 .favorited(isFavorited)
                 .author(author)
-//                .islocked(a.getIsLocked())
                 .build();
     }
+
+    @Override
+    public List<RoasterUserArticle> findRoasterUsers(int limit, int offset) {
+        return articleRepository.findRoasterUsers(limit, offset);
+    }
+
+    @Override
+    @Transactional
+    public ArticleWrapper favorite(Long userId, String slug) {
+        Article article = (Article) articleRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Article not found"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (!article.getFavoredByUsers().contains(user)) {
+            article.getFavoredByUsers().add(user);
+            article.setFavoritesCount(article.getFavoritesCount() + 1);
+            articleRepository.save(article);
+        }
+
+        userRepository.saveAndFlush(user);
+
+        ArticleResponse response = toArticleResponse(article, true);
+        return new ArticleWrapper(response);
+    }
+
+    @Override
+    @Transactional
+    public ArticleWrapper unFavorite(Long userId, String slug) {
+        Article article = (Article) articleRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Article not found"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (article.getFavoredByUsers().contains(user)) {
+            article.getFavoredByUsers().remove(user);
+            article.setFavoritesCount(Math.max(0, article.getFavoritesCount() - 1));
+            articleRepository.save(article);
+        }
+
+        userRepository.saveAndFlush(user);
+
+        ArticleResponse response = toArticleResponse(article, false);
+        return new ArticleWrapper(response);
+    }
+
 }

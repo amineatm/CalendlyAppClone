@@ -1,6 +1,7 @@
 package miu.edu.mpp.app.service.impl;
 
 
+import javassist.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import miu.edu.mpp.app.domain.User;
@@ -81,6 +82,26 @@ public class ProfileServiceImpl implements ProfileService {
         ProfileDto profile = new ProfileDto(following.getUsername(), following.getBio(), following.getImage(), false);
         return new ProfileResponse(profile);
     }
+
+    @Override
+    public ProfileResponse getProfile(Long currentUserId, String username) throws NotFoundException {
+        User currentUser = userRepository.findById(currentUserId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        User targetUser = userRepository.findByUsernameWithFollowers(username)
+                .orElseThrow(() -> new NotFoundException("Target user not found"));
+
+        boolean following = targetUser.getFollowers().contains(currentUser);
+
+        ProfileDto profile = new ProfileDto(
+                targetUser.getUsername(),
+                targetUser.getBio(),
+                targetUser.getImage(),
+                following
+        );
+        return new ProfileResponse(profile);
+    }
+
 }
 
 

@@ -5,11 +5,13 @@ import miu.edu.mpp.app.dto.article.*;
 import miu.edu.mpp.app.security.CurrentUser;
 import miu.edu.mpp.app.security.UserContext;
 import miu.edu.mpp.app.service.ArticleService;
-import static org.springframework.http.HttpStatus.CREATED;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
+
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/api/articles")
@@ -28,6 +30,7 @@ public class ArticleRest {
 
         return ResponseEntity.status(CREATED).body(response);
     }
+
     @GetMapping
     public ResponseEntity<ArticleListResponse> listArticles(
             @RequestParam(required = false) String tag,
@@ -59,4 +62,29 @@ public class ArticleRest {
         ArticleFeedResponse response = articleService.getFeedForUser(user.getId(), limit, offset);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/roaster")
+    public ResponseEntity<Map<String, Object>> getRoasterUsers(
+            @RequestParam(defaultValue = "20") int limit,
+            @RequestParam(defaultValue = "0") int offset) {
+
+        var roaster = articleService.findRoasterUsers(limit, offset);
+        return ResponseEntity.ok(Map.of("roaster", roaster));
+    }
+
+    @PostMapping("/{slug}/favorite")
+    public ResponseEntity<ArticleResponse> favoriteArticle(@PathVariable String slug) {
+        CurrentUser user = UserContext.get();
+        ArticleResponse response = articleService.favorite(user.getId(), slug).getArticle();
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{slug}/favorite")
+    public ResponseEntity<?> unfavorite(@PathVariable String slug) {
+        CurrentUser user = UserContext.get();
+        articleService.unFavorite(user.getId(), slug);
+        return ResponseEntity.ok().build();
+    }
+
+
 }
