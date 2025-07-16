@@ -10,7 +10,7 @@
 
 **Team Members:**
 
-\[Mohamed Amine Atmani]  \[619560]
+\[Amine Atmani]  \[619560]
 
 \[Leonardo Medina]  \[619571]
 
