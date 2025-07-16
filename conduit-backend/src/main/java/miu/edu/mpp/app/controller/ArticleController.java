@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -24,9 +25,10 @@ public class ArticleController {
     @PostMapping
     public ResponseEntity<ArticleCreateResponse> createArticle(
             @Valid @RequestBody ArticleCreateWrapper wrapper) {
+        CurrentUser user = UserContext.get();
 
         ArticleCreateResponse response =
-                articleService.createArticle(wrapper.getArticle());
+                articleService.createArticle(user, wrapper.getArticle());
 
         return ResponseEntity.status(CREATED).body(response);
     }
@@ -86,5 +88,13 @@ public class ArticleController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("{slug}")
+    public ResponseEntity<ArticleDTOResponse<ArticleDto>> getArticleBySlug(
+            @PathVariable String slug
+            ) {
+        CurrentUser user = UserContext.get();
+        ArticleDTOResponse<ArticleDto> response = articleService.getArticleBySlug(slug, user);
+        return ResponseEntity.ok(response);
+    }
 
 }

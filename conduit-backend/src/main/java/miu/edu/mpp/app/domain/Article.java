@@ -58,6 +58,10 @@ public class Article {
     @ManyToMany(mappedBy = "favoriteArticles")
     private Set<User> favoredByUsers = new HashSet<>();
 
+
+    @OneToMany(mappedBy = "article", fetch = FetchType.LAZY)
+    private List<Comment> comments;
+
     @Transient
     private boolean isLocked = false;
 

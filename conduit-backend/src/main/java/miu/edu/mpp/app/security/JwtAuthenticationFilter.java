@@ -53,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 user.setEmail(claims.get("email", String.class));
                 user.setUsername(claims.get("username", String.class));
 
-                UserContext.set(user);
+//                UserContext.set(user);
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -63,7 +63,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } finally {
-            UserContext.clear();
+            System.out.println(">> JwtAuthenticationFilter completed for URI: {}" + request.getRequestURI());
+//            UserContext.clear();
         }
     }
 
