@@ -1,6 +1,5 @@
 package miu.edu.mpp.app.security;
 
-import com.sun.istack.logging.Logger;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,7 +25,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain)
             throws ServletException, IOException {
+        String uri = request.getRequestURI();
+
         System.out.println(">> JwtAuthenticationFilter triggered for URI: {}"+ request.getRequestURI());
+
+        if (uri.startsWith("/swagger-ui") ||
+                uri.startsWith("/v2/api-docs") ||
+                uri.startsWith("/v3/api-docs") ||
+                uri.startsWith("/swagger-resources") ||
+                uri.startsWith("/webjars") ||
+                uri.equals("/swagger-ui.html")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
 
         String authHeader = request.getHeader("Authorization");
 
@@ -44,7 +56,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 UserContext.set(user);
                 UsernamePasswordAuthenticationToken authentication =
                         new UsernamePasswordAuthenticationToken(user, null, new ArrayList<>());
-                // ✅ Ahora sí: registra en Spring Security
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
@@ -52,7 +63,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } finally {
-            UserContext.clear(); // limpieza al final
+            UserContext.clear();
         }
     }
+
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String uri = request.getRequestURI();
+        return uri.startsWith("/swagger-ui") ||
+                uri.startsWith("/v2/api-docs") ||
+                uri.startsWith("/v3/api-docs") ||
+                uri.startsWith("/swagger-resources") ||
+                uri.startsWith("/webjars") ||
+                uri.equals("/swagger-ui.html") ||
+                uri.equals("/favicon.ico");
+    }
+
 }
