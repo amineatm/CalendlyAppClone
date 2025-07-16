@@ -178,13 +178,8 @@ public class ArticleServiceImpl implements ArticleService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-        List<User> following = user.getFollowing();
-        if (following.isEmpty()) {
-            return new ArticleFeedResponse(List.of(), 0);
-        }
-
-        Page<Article> articles = articleRepository.findByAuthorsIn(
-                following,
+        Page<Article> articles = articleRepository.findArticlesByFollowedUsers(
+                userId,
                 PageRequest.of(offset / limit, limit, Sort.by(Sort.Direction.DESC, "createdAt"))
         );
 
@@ -198,12 +193,10 @@ public class ArticleServiceImpl implements ArticleService {
                         .createdAt(article.getCreatedAt())
                         .updatedAt(article.getUpdatedAt())
                         .tagList(article.getTags().stream().map(Tag::getName).toList())
-//                        .favoritesCount(article.getFavoritedBy().size())
+//                        .favoritesCount(article.getFavoritedBy() != null ? article.getFavoritedBy().size() : 0)
                         .author(toUserResponse(article.getAuthor()))
                         .favorited(false)
-//                        .authors(List.of())
-//                        .collaboratorList(List.of())
-//                        .comments(List.of())
+//                        .islocked(article.getIsLocked())
                         .build())
                 .toList();
 
