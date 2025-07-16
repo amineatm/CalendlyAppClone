@@ -206,7 +206,7 @@ The project follows a standard layered architecture, which promotes separation o
 
 ## 6. Use Case Diagram(s)
 
-![Use case diagram](UseCaseDiagram.png)
+![Use case diagram](Readme/UseCaseDiagram.png)
 
 ## 7. Use Case Descriptions
 
@@ -260,14 +260,17 @@ The project follows a standard layered architecture, which promotes separation o
 
 ## 8. Class Diagram
 
-![Class diagram](ClassDiagram.png)
+![Class diagram](Readme/ClassDiagram.png)
 
 ## 9. Sequence Diagrams
 
-![Login Sequence](LoginSequence.png)
-![Create Article](CreateArticle.png)
-![Comment on Article](CommentOnArticle.png)
-![Follow User](FollowUser.png)
+![Login Sequence](Readme/LoginSequence.png)
+
+![Create Article](Readme/CreateArticle.png)
+
+![Comment on Article](Readme/CommentOnArticle.png)
+
+![Follow User](Readme/FollowUser.png)
 
 ---
 
