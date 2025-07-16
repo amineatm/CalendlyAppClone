@@ -130,7 +130,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ArticleListResponse listArticles(Long currentUserId, ArticleQueryParams p) {
-        // ---------- 0. usuario actual (para marcar 'favorited') ----------
         Set<Long> favoritesOfCurrent = new HashSet<>();
         User userInfo;
         if (currentUserId != null) {
@@ -142,7 +141,6 @@ public class ArticleServiceImpl implements ArticleService {
                    userInfo.getFavoriteArticles().stream().map(Article::getId).collect(Collectors.toSet())
            );
         }
-
 
         Specification<Article> spec = Specification.where(null);
 
