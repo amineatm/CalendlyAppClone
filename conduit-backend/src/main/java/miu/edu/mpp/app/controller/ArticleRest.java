@@ -5,11 +5,14 @@ import miu.edu.mpp.app.dto.article.*;
 import miu.edu.mpp.app.security.CurrentUser;
 import miu.edu.mpp.app.security.UserContext;
 import miu.edu.mpp.app.service.ArticleService;
-import static org.springframework.http.HttpStatus.CREATED;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
+
+import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
 @RequestMapping("/api/articles")
@@ -28,6 +31,7 @@ public class ArticleRest {
 
         return ResponseEntity.status(CREATED).body(response);
     }
+
     @GetMapping
     public ResponseEntity<ArticleListResponse> listArticles(
             @RequestParam(required = false) String tag,
@@ -58,5 +62,10 @@ public class ArticleRest {
         CurrentUser user = UserContext.get();
         ArticleFeedResponse response = articleService.getFeedForUser(user.getId(), limit, offset);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/roaster")
+    public RoasterResponse findRoasters(@RequestParam Map<String, String> query) {
+        return articleService.findRoasters(query);
     }
 }

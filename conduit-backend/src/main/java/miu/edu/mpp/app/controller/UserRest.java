@@ -7,14 +7,13 @@ import miu.edu.mpp.app.security.CurrentUser;
 import miu.edu.mpp.app.security.JwtUtil;
 import miu.edu.mpp.app.security.UserContext;
 import miu.edu.mpp.app.service.UserService;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 
 @RestController
@@ -42,11 +41,11 @@ public class UserRest {
         return ResponseEntity.ok(userService.findByEmail(user.getEmail()));
     }
 
-    @PutMapping()
-    public ResponseEntity<UserRo> updateUser(
-                                             @RequestBody UpdateUserRequest request) throws NotFoundException {
+    @PutMapping
+    public ResponseEntity<UserRo> updateUser(@RequestBody UpdateUserWrapper request) throws NotFoundException {
         CurrentUser user = UserContext.get();
-        return ResponseEntity.ok(userService.update(user.getEmail(), request));
+        UserRo userRo = userService.update(user.getEmail(), request.getUser());
+        return ResponseEntity.ok(userRo);
     }
 
     @DeleteMapping("/users/{slug}")

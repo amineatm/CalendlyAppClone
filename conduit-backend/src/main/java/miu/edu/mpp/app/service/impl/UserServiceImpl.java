@@ -26,17 +26,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserLoginResponse login(UserLoginRequest request) {
-        User user = userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword())
-                .orElseThrow(() -> new ResponseStatusException(UNAUTHORIZED, "Invalid credentials"));
-        String  token= jwtUtil.generateToken(user);
+        User user = userRepository.findByEmailAndPassword(request.getEmail(), request.getPassword()).orElseThrow(() -> new ResponseStatusException(UNAUTHORIZED, "Invalid credentials"));
+        String token = jwtUtil.generateToken(user);
 
-        UserResponse userResponse = UserResponse.builder()
-                .email(user.getEmail())
-                .username(user.getUsername())
-                .bio(user.getBio())
-                .image(user.getImage())
-                .token(token)
-                .build();
+        UserResponse userResponse = UserResponse.builder().email(user.getEmail()).username(user.getUsername()).bio(user.getBio()).image(user.getImage()).token(token).build();
 
         return new UserLoginResponse(userResponse);
     }
@@ -59,36 +52,38 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
-        UserResponse response = UserResponse.builder()
-                .username(user.getUsername())
-                .email(user.getEmail())
-                .bio(user.getBio())
-                .image(user.getImage())
-                .token("IN BLANK")
-                .build();
+        UserResponse response = UserResponse.builder().username(user.getUsername()).email(user.getEmail()).bio(user.getBio()).image(user.getImage()).token(jwtUtil.generateToken(user)).build();
 
         return new UserLoginResponse(response);
     }
 
     @Override
     public UserRo findByEmail(String email) throws NotFoundException {
-        User user = (User) userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("User not found"));
-        return new UserRo(user.getUsername(), user.getEmail(), user.getBio(), user.getImage(), null);
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found"));
+        return new UserRo(user.getUsername(), user.getEmail(), user.getBio(), user.getImage(), jwtUtil.generateToken(user));
     }
 
     @Override
     @Transactional
     public UserRo update(String email, UpdateUserRequest dto) throws NotFoundException {
-        User user = (User) userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("User not found"));
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found"));
 
-        if (dto.getUsername() != null) user.setUsername(dto.getUsername());
-        if (dto.getBio() != null) user.setBio(dto.getBio());
-        if (dto.getImage() != null) user.setImage(dto.getImage());
-        if (dto.getPassword() != null) user.setPassword(HashUtil.sha256(dto.getPassword()));
+        if (dto.getUsername() != null && !dto.getUsername().isBlank()) {
+            user.setUsername(dto.getUsername());
+        }
+        if (dto.getBio() != null && !dto.getBio().isBlank()) {
+            user.setBio(dto.getBio());
+        }
+        if (dto.getImage() != null && !dto.getImage().isBlank()) {
+            user.setImage(dto.getImage());
+        }
+        if (dto.getPassword() != null && !dto.getPassword().isBlank()) {
+            user.setPassword(dto.getPassword());
+        }
 
-        return new UserRo(user.getUsername(), user.getEmail(), user.getBio(), user.getImage(), null);
+        userRepository.saveAndFlush(user);
+
+        return new UserRo(user.getUsername(), user.getEmail(), user.getBio(), user.getImage(), jwtUtil.generateToken(user));
     }
 
     @Override
