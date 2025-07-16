@@ -206,7 +206,7 @@ The project follows a standard layered architecture, which promotes separation o
 
 ## 6. Use Case Diagram(s)
 
-![Use case diagram](Readme/UseCaseDiagram.png)
+![Use case diagram](uml-diagrams/UseCaseDiagram.png)
 
 ## 7. Use Case Descriptions
 
@@ -260,25 +260,25 @@ The project follows a standard layered architecture, which promotes separation o
 
 ## 8. Class Diagram
 
-![Class diagram](Readme/ClassDiagram.png)
+![Class diagram](uml-diagrams/ClassDiagram.png)
 
 ## 9. Sequence Diagrams
 
 1. Login Sequence:
 
-![Login Sequence](Readme/LoginSequence.png)
+![Login Sequence](uml-diagrams/LoginSequence.png)
 
 2. Create Article:
 
-![Create Article](Readme/CreateArticle.png)
+![Create Article](uml-diagrams/CreateArticle.png)
 
 3. Comment on Article:
 
-![Comment on Article](Readme/CommentOnArticle.png)
+![Comment on Article](uml-diagrams/CommentOnArticle.png)
 
 4. Follow User:
 
-![Follow User](Readme/FollowUser.png)
+![Follow User](uml-diagrams/FollowUser.png)
 
 ---
 
