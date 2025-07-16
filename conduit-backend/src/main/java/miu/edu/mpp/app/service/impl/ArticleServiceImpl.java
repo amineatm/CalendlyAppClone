@@ -130,16 +130,16 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ArticleListResponse listArticles(Long currentUserId, ArticleQueryParams p) {
         // ---------- 0. usuario actual (para marcar 'favorited') ----------
-        Set<Long> favoritesOfCurrent = Set.of();
+        Set<Long> favoritesOfCurrent = new HashSet<>();
         User userInfo;
         if (currentUserId != null) {
             userInfo = userRepository
                     .findById(1L)
                     .orElseThrow(() -> new RuntimeException("Author not found"));
 
-//           favoritesOfCurrent.addAll(
-//                   userInfo.getFavoriteArticles().stream().map(Article::getId).collect(Collectors.toSet())
-//           );
+           favoritesOfCurrent.addAll(
+                   userInfo.getFavoriteArticles().stream().map(Article::getId).collect(Collectors.toSet())
+           );
         }
 
 
@@ -163,7 +163,6 @@ public class ArticleServiceImpl implements ArticleService {
             spec = spec.and(ArticleSpecifications.favoritedByUsername(p.getFavorited()));
         }
 
-        // ---------- 2. consulta paginada ----------
         PageRequest pageReq = PageRequest.of(
                 p.getOffset() / p.getLimit(),
                 p.getLimit(),
@@ -171,7 +170,6 @@ public class ArticleServiceImpl implements ArticleService {
 
         Page<Article> page = articleRepository.findAll(spec, pageReq);
 
-        // ---------- 3. mapeo a DTO ----------
         List<ArticleResponse> responses = page.getContent().stream()
                 .map(a -> toArticleResponse(a, favoritesOfCurrent.contains(a.getId())))
                 .collect(Collectors.toList());
@@ -280,5 +278,25 @@ public class ArticleServiceImpl implements ArticleService {
         return new ArticleWrapper(response);
     }
 
+    @Override
+    @Transactional
+    public ArticleWrapper unFavorite(Long userId, String slug) {
+        Article article = (Article) articleRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Article not found"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
+        if (article.getFavoredByUsers().contains(user)) {
+            article.getFavoredByUsers().remove(user);
+            article.setFavoritesCount(Math.max(0, article.getFavoritesCount() - 1));
+            articleRepository.save(article);
+        }
+
+        userRepository.saveAndFlush(user);
+
+        ArticleResponse response = toArticleResponse(article, false);
+        return new ArticleWrapper(response);
+    }
 
 }

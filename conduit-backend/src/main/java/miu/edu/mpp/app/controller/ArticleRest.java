@@ -79,12 +79,12 @@ public class ArticleRest {
         return ResponseEntity.ok(response);
     }
 
-//    @DeleteMapping("/{slug}/favorite")
-//    public ResponseEntity<?> unfavorite(@PathVariable String slug) {
-//        CurrentUser user = UserContext.get();
-//        articleService.unfavorite(user.getId(), slug);
-//        return ResponseEntity.ok().build();
-//    }
+    @DeleteMapping("/{slug}/favorite")
+    public ResponseEntity<?> unfavorite(@PathVariable String slug) {
+        CurrentUser user = UserContext.get();
+        articleService.unFavorite(user.getId(), slug);
+        return ResponseEntity.ok().build();
+    }
 
 
 }

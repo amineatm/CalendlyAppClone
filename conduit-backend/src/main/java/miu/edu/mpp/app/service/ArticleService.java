@@ -14,7 +14,7 @@ public interface ArticleService {
     List<RoasterUserArticle> findRoasterUsers(int limit, int offset);
 
     ArticleWrapper favorite(Long userId, String slug);
-    //void unfavorite(Long userId, String slug);
+    ArticleWrapper unFavorite(Long userId, String slug);
 
 
 }
