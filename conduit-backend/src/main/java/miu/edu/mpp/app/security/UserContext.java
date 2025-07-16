@@ -1,21 +1,17 @@
 package miu.edu.mpp.app.security;
 
+import org.springframework.security.core.context.SecurityContextHolder;
+
 public final class UserContext {
 
-    private static final ThreadLocal<CurrentUser> HOLDER = new ThreadLocal<>();
+    private static final CurrentUser HOLDER = new CurrentUser();
 
     private UserContext() {}
 
-    public static void set(CurrentUser user) {
-        HOLDER.set(user);
-    }
 
     public static CurrentUser get() {
-        return HOLDER.get();
+        return (CurrentUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
-    public static void clear() {
-        HOLDER.remove();
-    }
 }
 

@@ -97,12 +97,4 @@ public class ArticleController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("{slug}/comments")
-    public ResponseEntity<List> getArticleBySlugComments(
-            @PathVariable String slug
-            ) {
-        CurrentUser user = UserContext.get();
-        return ResponseEntity.ok(List.of());
-    }
-
 }

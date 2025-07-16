@@ -60,7 +60,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserRo findByEmail(String email) throws NotFoundException {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new NotFoundException("User not found"));
-        return new UserRo(user.getUsername(), user.getEmail(), user.getBio(), user.getImage(), jwtUtil.generateToken(user));
+        return UserRo.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .bio(user.getBio())
+                .image(user.getImage())
+                .token(jwtUtil.generateToken(user))
+                .build();
     }
 
     @Override
@@ -83,7 +89,14 @@ public class UserServiceImpl implements UserService {
 
         userRepository.saveAndFlush(user);
 
-        return new UserRo(user.getUsername(), user.getEmail(), user.getBio(), user.getImage(), jwtUtil.generateToken(user));
+        return UserRo.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .bio(user.getBio())
+                .image(user.getImage())
+                .token(jwtUtil.generateToken(user))
+                .build();
+
     }
 
     @Override
