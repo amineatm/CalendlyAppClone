@@ -264,11 +264,19 @@ The project follows a standard layered architecture, which promotes separation o
 
 ## 9. Sequence Diagrams
 
+1. Login Sequence:
+
 ![Login Sequence](Readme/LoginSequence.png)
+
+2. Create Article:
 
 ![Create Article](Readme/CreateArticle.png)
 
+3. Comment on Article:
+
 ![Comment on Article](Readme/CommentOnArticle.png)
+
+4. Follow User:
 
 ![Follow User](Readme/FollowUser.png)
 
