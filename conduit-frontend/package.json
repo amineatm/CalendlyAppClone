@@ -143,5 +143,4 @@
       "pre-commit": "npm run format"
     }
   }
-
 }

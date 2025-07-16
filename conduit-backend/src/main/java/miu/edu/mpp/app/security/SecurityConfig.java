@@ -20,16 +20,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable() // Deshabilitar CSRF para APIs REST
+                .csrf().disable() // Disable CSRF for stateless APIs
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                // APIs públicas
+                // Public APIs
                 .antMatchers(HttpMethod.POST, "/api/users/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/users").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/tags").permitAll()
-
-                // El resto requiere autenticación
+                .antMatchers(HttpMethod.GET, "/api/articles/roaster").permitAll()
+                // Other APIs require authentication
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

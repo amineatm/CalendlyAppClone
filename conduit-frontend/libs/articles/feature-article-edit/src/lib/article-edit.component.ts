@@ -1,13 +1,13 @@
 import { DynamicFormComponent, Field, formsActions, ListErrorsComponent, ngrxFormsQuery } from '@realworld/core/forms';
-import {ChangeDetectionStrategy, Component, inject, OnInit} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { OnDestroy } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { Store } from '@ngrx/store';
 import { articleActions, articleEditActions, articleQuery } from '@realworld/articles/data-access';
-import {AsyncPipe} from "@angular/common";
-import {ActivatedRoute, ActivatedRouteSnapshot, ResolveFn} from "@angular/router";
-import {Article} from "@realworld/core/api-types";
+import { AsyncPipe } from '@angular/common';
+import { ActivatedRoute, ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
+import { Article } from '@realworld/core/api-types';
 
 const structure: Field[] = [
   {
@@ -63,22 +63,22 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
     this.store
       .select(articleQuery.selectData)
       .pipe(untilDestroyed(this))
-      .subscribe((article:Article) => {
+      .subscribe((article: Article) => {
         this.data = article;
 
-        this.store.dispatch(formsActions.setData({ data: article }))
+        this.store.dispatch(formsActions.setData({ data: article }));
       });
   }
 
-  stringToArray(dataConvert: string| string[]):any{
-    const dataArray = typeof dataConvert == 'string' && dataConvert?.split(",").map((x:any) => x.trim())
-   return dataArray || dataConvert;
+  stringToArray(dataConvert: string | string[]): any {
+    const dataArray = typeof dataConvert == 'string' && dataConvert?.split(',').map((x: any) => x.trim());
+    return dataArray || dataConvert;
   }
   updateForm(changes: any) {
-    const tagList =  this.stringToArray(changes.tagList)
-    const collaboratorList =  this.stringToArray(changes.collaboratorList)
+    const tagList = this.stringToArray(changes.tagList);
+    const collaboratorList = this.stringToArray(changes.collaboratorList);
 
-    this.store.dispatch(formsActions.updateData({ data: {...changes, tagList, collaboratorList} }));
+    this.store.dispatch(formsActions.updateData({ data: { ...changes, tagList, collaboratorList } }));
   }
 
   submit() {

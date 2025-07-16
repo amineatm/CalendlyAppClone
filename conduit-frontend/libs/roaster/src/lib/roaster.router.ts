@@ -1,5 +1,5 @@
-import {Routes} from "@angular/router";
-import {RoasterComponent} from "./roaster.component";
+import { Routes } from '@angular/router';
+import { RoasterComponent } from './roaster.component';
 
 export const ROASTER_ROUTES: Routes = [
   {

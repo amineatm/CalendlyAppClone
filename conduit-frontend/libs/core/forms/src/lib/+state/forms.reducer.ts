@@ -26,9 +26,9 @@ export const ngrxFormsFeature = createFeature({
     on(formsActions.updateData, (state, action) => {
       // const tagList =  typeof action.data.tagList == 'string' && action.data.tagList?.split(",").map((tag:any) => tag.trim())
       // const collaboratorList =  typeof action.data.collaboratorList == 'string' && action.data.collaboratorList?.split(",").map((collaborator:any) => collaborator.trim())
-        // ,  tagList: tagList || action.data.tagList
-      const data = { ...state.data, ...action.data,};
-      console.log(data)
+      // ,  tagList: tagList || action.data.tagList
+      const data = { ...state.data, ...action.data };
+      console.log(data);
       return { ...state, data, touched: true };
     }),
     on(formsActions.setStructure, (state, action) => ({ ...state, structure: action.structure.slice(0) })),

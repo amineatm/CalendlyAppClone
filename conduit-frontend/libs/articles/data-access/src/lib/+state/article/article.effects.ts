@@ -134,7 +134,6 @@ export const deleteArticleSuccess$ = createEffect(
   { functional: true, dispatch: false },
 );
 
-
 export const lockArticle$ = createEffect(
   (actions$ = inject(Actions), articlesService = inject(ArticlesService)) => {
     return actions$.pipe(

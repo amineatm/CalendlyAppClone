@@ -1,15 +1,13 @@
-
-
 Getting started:
- - Install the dependencies `npx yarn install`.
- - Start the app (both backend and frontend at once): `npm start`.
- - You can now access the UI at http://localhost:4200 and login with `jcosten0@purevolume.com` / `password`.
 
+- Install the dependencies `npx yarn install`.
+- Start the app (both backend and frontend at once): `npm start`.
+- You can now access the UI at http://localhost:4200 and login with `jcosten0@purevolume.com` / `password`.
 
 [RoutesResolver] AppController {/api/api}: +11ms
 [RouterExplorer] Mapped {/api/api, GET} route +1ms
 [RoutesResolver] ArticleController {/api/articles}: +0ms
-[RouterExplorer] Mapped {/api/articles, GET} route +0ms -- 
+[RouterExplorer] Mapped {/api/articles, GET} route +0ms --
 [RouterExplorer] Mapped {/api/articles/roaster, GET} route +0ms
 [RouterExplorer] Mapped {/api/articles/feed, GET} route +0ms
 [RouterExplorer] Mapped {/api/articles/:slug, GET} route +0ms

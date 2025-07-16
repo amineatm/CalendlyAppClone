@@ -55,7 +55,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
         untilDestroyed(this),
       )
       .subscribe(([auth, authors]) => {
-        this.canModify = authors.findIndex((author)=> author.username === auth.user.username) !== -1;
+        this.canModify = authors.findIndex((author) => author.username === auth.user.username) !== -1;
       });
   }
 

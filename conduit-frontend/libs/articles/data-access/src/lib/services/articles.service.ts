@@ -59,5 +59,4 @@ export class ArticlesService {
   private toHttpParams(params: any) {
     return Object.getOwnPropertyNames(params).reduce((p, key) => p.set(key, params[key]), new HttpParams());
   }
-
 }

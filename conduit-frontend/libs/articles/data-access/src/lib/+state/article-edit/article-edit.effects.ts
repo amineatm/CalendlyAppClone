@@ -6,7 +6,7 @@ import { formsActions, ngrxFormsQuery } from '@realworld/core/forms';
 import { catchError, concatMap, map, of, tap } from 'rxjs';
 import { ArticlesService } from '../../services/articles.service';
 import { articleEditActions } from './article-edit.actions';
-import {articleActions} from "@realworld/articles/data-access/src";
+import { articleActions } from '@realworld/articles/data-access/src';
 
 export const publishArticle$ = createEffect(
   (
@@ -30,4 +30,3 @@ export const publishArticle$ = createEffect(
   },
   { functional: true },
 );
-

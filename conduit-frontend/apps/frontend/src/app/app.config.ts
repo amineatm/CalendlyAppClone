@@ -24,7 +24,8 @@ export const appConfig: ApplicationConfig = {
       },
       {
         path: 'roaster',
-        loadChildren: () => import('@realworld/roaster/src/lib/roaster.router').then((roaster) => roaster.ROASTER_ROUTES),
+        loadChildren: () =>
+          import('@realworld/roaster/src/lib/roaster.router').then((roaster) => roaster.ROASTER_ROUTES),
       },
       {
         path: 'login',

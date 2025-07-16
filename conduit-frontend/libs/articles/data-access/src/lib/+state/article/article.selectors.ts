@@ -12,5 +12,5 @@ export const articleQuery = {
   selectLoaded,
   selectLoading,
   getAuthorUsername,
-  getAuthors
+  getAuthors,
 };

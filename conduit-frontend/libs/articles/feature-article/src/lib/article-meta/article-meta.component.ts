@@ -1,7 +1,7 @@
 import { Component, Input, ChangeDetectionStrategy, EventEmitter, Output } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import {Article, Profile} from '@realworld/core/api-types';
+import { Article, Profile } from '@realworld/core/api-types';
 @Component({
   selector: 'cdt-article-meta',
   standalone: true,
@@ -30,7 +30,7 @@ export class ArticleMetaComponent {
   }
 
   toggleFollow(author: Profile) {
-    console.log(author)
+    console.log(author);
     if (author.following) {
       this.unfollow.emit(author.username);
     } else {

@@ -1,4 +1,4 @@
-import {Article, Comment, Profile} from '@realworld/core/api-types';
+import { Article, Comment, Profile } from '@realworld/core/api-types';
 import { createFeature, createReducer, on } from '@ngrx/store';
 import { articleActions } from './article.actions';
 import { articlesActions } from '../articles.actions';
@@ -11,7 +11,7 @@ export interface ArticleState {
   loaded: boolean;
 }
 
-export const articleInitialState: ArticleState  = {
+export const articleInitialState: ArticleState = {
   data: {
     slug: '',
     title: '',
@@ -32,7 +32,7 @@ export const articleInitialState: ArticleState  = {
       loading: false,
     },
     authors: [],
-    islocked: false
+    islocked: false,
   },
   comments: [],
   loaded: false,
@@ -44,16 +44,13 @@ export const articleFeature = createFeature({
   reducer: createReducer(
     articleInitialState,
     on(articleActions.loadArticleSuccess, (state, action) => {
-      let authors:Profile[] = [
-        ...action.article.authors,
-        action.article.author
-        ]
+      let authors: Profile[] = [...action.article.authors, action.article.author];
       return {
         ...state,
-        data: { ...action.article, authors},
+        data: { ...action.article, authors },
         loaded: true,
         loading: false,
-      }
+      };
     }),
     on(articleActions.loadArticleFailure, (state) => ({
       ...state,

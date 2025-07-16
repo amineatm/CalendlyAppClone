@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 export const articleEditResolver: ResolveFn<boolean> = (route: ActivatedRouteSnapshot) => {
   const slug = route.params['slug'];
   const store = inject(Store);
-console.log("Ingresa resolver")
+  console.log('Ingresa resolver');
   if (slug) {
     store.dispatch(articleActions.loadArticle({ slug }));
     store.dispatch(articleActions.lockArticle({ slug }));
