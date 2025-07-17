@@ -22,7 +22,7 @@ export const publishArticle$ = createEffect(
         articlesService.publishArticle(data).pipe(
           tap((result) => router.navigate(['article', result.article.slug])),
           map(() => articleEditActions.publishArticleSuccess()),
-          tap(() => data.slug && store.dispatch(articleActions.unlockArticle({ slug: data.slug }))),
+          // tap(() => data.slug && store.dispatch(articleActions.unlockArticle({ slug: data.slug }))),
           catchError((result) => of(formsActions.setErrors({ errors: result.error.errors }))),
         ),
       ),
