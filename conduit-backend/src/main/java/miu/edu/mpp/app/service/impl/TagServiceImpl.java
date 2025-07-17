@@ -1,6 +1,7 @@
 package miu.edu.mpp.app.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import miu.edu.mpp.app.domain.Tag;
 import miu.edu.mpp.app.dto.tag.TagsResponse;
 import miu.edu.mpp.app.repository.TagRepository;
 import miu.edu.mpp.app.service.TagService;
@@ -18,7 +19,7 @@ public class TagServiceImpl implements TagService {
     public TagsResponse getAllTags() {
         var names = tagRepository.findAll()
                 .stream()
-                .map(tag -> tag.getName())
+                .map(Tag::getName)
                 .collect(Collectors.toList());
         return new TagsResponse(names);
     }

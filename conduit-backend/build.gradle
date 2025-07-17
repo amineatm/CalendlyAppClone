@@ -86,3 +86,6 @@ allprojects {
 bootRun {
 	jvmArgs = ["-Dfile.encoding=UTF-8"]
 }
+tasks.withType(JavaCompile) {
+	options.compilerArgs << "-Xlint:unchecked"
+}
