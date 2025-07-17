@@ -3,6 +3,8 @@ package miu.edu.mpp.app.service.impl;
 import miu.edu.mpp.app.domain.*;
 import miu.edu.mpp.app.dto.article.ArticleCreateRequest;
 import miu.edu.mpp.app.dto.article.ArticleCreateResponse;
+import miu.edu.mpp.app.dto.article.ArticleDTOResponse;
+import miu.edu.mpp.app.dto.article.ArticleResponse;
 import miu.edu.mpp.app.repository.*;
 import miu.edu.mpp.app.security.CurrentUser;
 import miu.edu.mpp.app.security.JwtUtil;
@@ -67,7 +69,7 @@ class ArticleServiceImplTest {
         });
 
         // Act
-        ArticleCreateResponse response = articleService.createArticle(currentUser, request);
+        ArticleDTOResponse<ArticleResponse> response = articleService.createArticle(currentUser, request);
 
         // Assert
         assertThat(response).isNotNull();
@@ -105,7 +107,7 @@ class ArticleServiceImplTest {
         });
 
         // Act
-        ArticleCreateResponse response = articleService.createArticle(currentUser, request);
+        ArticleDTOResponse<ArticleResponse>  response = articleService.createArticle(currentUser, request);
 
         // Assert
         assertThat(response.getArticle().getTitle()).isEqualTo("Simple Article");

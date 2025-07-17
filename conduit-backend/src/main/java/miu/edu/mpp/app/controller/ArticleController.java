@@ -22,11 +22,11 @@ public class ArticleController {
 
 
     @PostMapping
-    public ResponseEntity<ArticleCreateResponse> createArticle(
+    public ResponseEntity<ArticleDTOResponse<ArticleResponse> > createArticle(
             @Valid @RequestBody ArticleCreateWrapper wrapper) {
         CurrentUser user = UserContext.get();
 
-        ArticleCreateResponse response =
+        ArticleDTOResponse<ArticleResponse> response =
                 articleService.createArticle(user, wrapper.getArticle());
 
         return ResponseEntity.status(CREATED).body(response);
@@ -55,12 +55,12 @@ public class ArticleController {
     }
 
     @GetMapping("/feed")
-    public ResponseEntity<ArticleFeedResponse> getFeed(
+    public ResponseEntity<ArticleListResponse> getFeed(
             @RequestParam(defaultValue = "20") int limit,
             @RequestParam(defaultValue = "0") int offset
     ) {
         CurrentUser user = UserContext.get();
-        ArticleFeedResponse response = articleService.getFeedForUser(user.getId(), limit, offset);
+        ArticleListResponse response = articleService.getFeedForUser(user.getId(), limit, offset);
         return ResponseEntity.ok(response);
     }
 

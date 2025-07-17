@@ -44,7 +44,7 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     @Transactional
-    public ArticleCreateResponse createArticle(CurrentUser userLogin, ArticleCreateRequest req) {
+    public ArticleDTOResponse<ArticleResponse>  createArticle(CurrentUser userLogin, ArticleCreateRequest req) {
 
         // ---------- Tags ----------
         String tagsConcatenados = Optional.ofNullable(req.getTagList())
@@ -124,7 +124,7 @@ public class ArticleServiceImpl implements ArticleService {
                 .collaboratorsAdded(collaboratorsAdded)
                 .build();
 
-        return new ArticleCreateResponse(ar);
+        return new ArticleDTOResponse<ArticleResponse> (ar);
     }
 
     @Override
@@ -176,13 +176,13 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ArticleFeedResponse getFeedForUser(Long userId, int limit, int offset) {
+    public ArticleListResponse getFeedForUser(Long userId, int limit, int offset) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         List<User> following = user.getFollowing();
         if (following.isEmpty()) {
-            return new ArticleFeedResponse(List.of(), 0);
+            return new ArticleListResponse(List.of(), 0);
         }
 
         Page<Article> articles = articleRepository.findByAuthorsIn(
@@ -210,7 +210,7 @@ public class ArticleServiceImpl implements ArticleService {
                         .build())
                 .toList();
 
-        return new ArticleFeedResponse(responseList, articles.getTotalElements());
+        return new ArticleListResponse(responseList, articles.getTotalElements());
     }
 
 
@@ -332,7 +332,7 @@ public class ArticleServiceImpl implements ArticleService {
                 following,
                 author.getEmail());
 
-        return new ArticleDTOResponse(ArticleDto.builder()
+        return new ArticleDTOResponse<ArticleDto> (ArticleDto.builder()
                 .id(article.getId())
                 .slug(article.getSlug())
                 .title(article.getTitle())

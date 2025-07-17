@@ -17,12 +17,9 @@ public class ArticleCreateRequest {
     @NotBlank
     private String body;
 
-    // Tags que vienen en el JSON
     private List<String> tagList;
 
-    // Correos de colaboradores
     private List<String> collaboratorList;
 
-    // Flag de locking
     private boolean islocked;
 }

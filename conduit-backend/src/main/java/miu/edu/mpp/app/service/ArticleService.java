@@ -7,11 +7,11 @@ import miu.edu.mpp.app.security.CurrentUser;
 import java.util.List;
 
 public interface ArticleService {
-    ArticleCreateResponse createArticle(CurrentUser user, ArticleCreateRequest request);
+    ArticleDTOResponse<ArticleResponse>  createArticle(CurrentUser user, ArticleCreateRequest request);
 
     ArticleListResponse listArticles(Long currentUserId, ArticleQueryParams params);
 
-    ArticleFeedResponse getFeedForUser(Long userId, int limit, int offset);
+    ArticleListResponse getFeedForUser(Long userId, int limit, int offset);
 
     List<RoasterUserArticle> findRoasterUsers(int limit, int offset);
 
