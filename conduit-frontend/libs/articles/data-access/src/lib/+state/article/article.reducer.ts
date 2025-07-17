@@ -18,7 +18,6 @@ export const articleInitialState: ArticleState = {
     description: '',
     body: '',
     tagList: [],
-    collaboratorList: [],
     createdAt: '',
     updatedAt: '',
     favorited: false,
@@ -32,7 +31,6 @@ export const articleInitialState: ArticleState = {
       loading: false,
     },
     authors: [],
-    islocked: false,
   },
   comments: [],
   loaded: false,
@@ -60,7 +58,6 @@ export const articleFeature = createFeature({
     })),
     on(articleActions.addCommentSuccess, (state, action) => {
       const comments: Comment[] = [action.comment, ...state.comments];
-      debugger;
       return { ...state, comments };
     }),
     on(articleActions.deleteCommentSuccess, (state, action) => {

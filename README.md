@@ -387,9 +387,8 @@ We followed clean architecture principles to separate concerns:
 
 ## 14. Team Members
 
-Team Members:
+[Leonardo Medina] — [619571] 
 
-[Leonardo Medina] — [619571]
 [Mohamed Amine Atmani] — [619560]
 
 ---

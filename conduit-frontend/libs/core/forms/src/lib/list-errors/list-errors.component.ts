@@ -24,7 +24,17 @@ export class ListErrorsComponent implements OnInit, OnDestroy {
       .select(ngrxFormsQuery.selectErrors)
       .pipe(untilDestroyed(this))
       .subscribe((e) => {
-        this.errors = Object.keys(e || {}).map((key) => `${key} ${e[key]}`);
+        // Intentamos parsear si es un string
+        let errorsArray: any[] = [];
+
+        try {
+          const parsed = typeof e === 'string' ? JSON.parse(e) : e;
+          errorsArray = Array.isArray(parsed) ? parsed : [];
+        } catch (err) {
+          console.error('Error parsing error response', err);
+        }
+
+        this.errors = errorsArray.map((err: any) => `${err.code} ${err.message}`);
         this.changeDetectorRef.markForCheck();
       });
   }

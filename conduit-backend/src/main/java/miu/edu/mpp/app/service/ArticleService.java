@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ArticleService {
     ArticleDTOResponse<ArticleResponse>  createArticle(CurrentUser user, ArticleCreateRequest request);
+    ArticleDTOResponse<ArticleResponse> updateArticleBySlug(CurrentUser user, String slug, ArticleCreateRequest request);
 
     ArticleListResponse listArticles(Long currentUserId, ArticleQueryParams params);
 

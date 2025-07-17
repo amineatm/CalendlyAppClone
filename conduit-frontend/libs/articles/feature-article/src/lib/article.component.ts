@@ -59,7 +59,6 @@ export class ArticleComponent implements OnInit, OnDestroy {
       });
 
     this.comments$.subscribe(([comments]) => {
-      debugger;
       console.log(comments);
     });
   }
@@ -83,7 +82,6 @@ export class ArticleComponent implements OnInit, OnDestroy {
     this.store.dispatch(articleActions.deleteComment(data));
   }
   submit(slug: string) {
-    debugger;
     this.store.dispatch(articleActions.addComment({ slug }));
   }
   updateForm(changes: any) {

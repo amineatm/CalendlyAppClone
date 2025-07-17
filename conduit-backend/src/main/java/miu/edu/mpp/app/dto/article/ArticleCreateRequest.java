@@ -19,7 +19,4 @@ public class ArticleCreateRequest {
 
     private List<String> tagList;
 
-    private List<String> collaboratorList;
-
-    private boolean islocked;
 }

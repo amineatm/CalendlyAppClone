@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping("/api/articles")
@@ -30,6 +31,15 @@ public class ArticleController {
                 articleService.createArticle(user, wrapper.getArticle());
 
         return ResponseEntity.status(CREATED).body(response);
+    }
+
+    @PutMapping("{slug}")
+    public ResponseEntity<ArticleDTOResponse<ArticleResponse>> updateArticle(
+            @PathVariable String slug,
+            @RequestBody ArticleDTOResponse< ArticleCreateRequest> request) {
+        CurrentUser user = UserContext.get();
+        ArticleDTOResponse<ArticleResponse> updated = articleService.updateArticleBySlug(user, slug, request.getArticle());
+        return ResponseEntity.ok(updated);
     }
 
     @GetMapping

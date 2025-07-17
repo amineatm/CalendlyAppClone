@@ -22,8 +22,23 @@ export const publishArticle$ = createEffect(
         articlesService.publishArticle(data).pipe(
           tap((result) => router.navigate(['article', result.article.slug])),
           map(() => articleEditActions.publishArticleSuccess()),
-          // tap(() => data.slug && store.dispatch(articleActions.unlockArticle({ slug: data.slug }))),
           catchError((result) => of(formsActions.setErrors({ errors: result.error.errors }))),
+        ),
+      ),
+    );
+  },
+  { functional: true },
+);
+
+
+export const loadArticle$ = createEffect(
+  (actions$ = inject(Actions), articlesService = inject(ArticlesService)) => {
+    return actions$.pipe(
+      ofType(articleActions.loadArticle),
+      concatMap((action) =>
+        articlesService.getArticle(action.slug).pipe(
+          map((response) => articleActions.loadArticleSuccess({ article: response.article })),
+          catchError((error) => of(articleActions.loadArticleFailure(error))),
         ),
       ),
     );

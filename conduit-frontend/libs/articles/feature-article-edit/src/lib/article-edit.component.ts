@@ -55,12 +55,16 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
   structure$ = this.store.select(ngrxFormsQuery.selectStructure);
   data$ = this.store.select(ngrxFormsQuery.selectData);
   data: any = {};
+  slug = "";
 
-  constructor(private readonly store: Store) {}
+  constructor(private readonly store: Store, private route: ActivatedRoute) {
+
+  }
 
   ngOnInit() {
+
+
     this.store.dispatch(formsActions.setStructure({ structure }));
-    debugger;
     this.store
       .select(articleQuery.selectData)
       .pipe(untilDestroyed(this))
@@ -77,9 +81,8 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
   }
   updateForm(changes: any) {
     const tagList = this.stringToArray(changes.tagList);
-    const collaboratorList = this.stringToArray(changes.collaboratorList);
 
-    this.store.dispatch(formsActions.updateData({ data: { ...changes, tagList, collaboratorList } }));
+    this.store.dispatch(formsActions.updateData({ data: { ...changes, tagList } }));
   }
 
   submit() {

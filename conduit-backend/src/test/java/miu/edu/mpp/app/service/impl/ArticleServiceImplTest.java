@@ -45,7 +45,6 @@ class ArticleServiceImplTest {
         request.setDescription("Description");
         request.setBody("Content");
         request.setTagList(List.of("java", "spring"));
-        request.setCollaboratorList(List.of("collab@example.com"));
 
         Tag tag1 = new Tag(1L, "java");
         Tag tag2 = new Tag(2L, "spring");
@@ -79,7 +78,6 @@ class ArticleServiceImplTest {
         assertThat(response.getArticle().getTagList()).containsExactlyInAnyOrder("java", "spring");
 
         verify(articleRepository).save(any(Article.class));
-        verify(articleAuthorRepository).save(any(ArticleAuthor.class));
     }
 
     @Test
@@ -93,8 +91,6 @@ class ArticleServiceImplTest {
         request.setDescription("None");
         request.setBody("Body");
         request.setTagList(null);
-        request.setCollaboratorList(null);
-        request.setIslocked(false);
 
         User author = new User();
         author.setId(userId);

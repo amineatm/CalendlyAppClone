@@ -51,17 +51,6 @@ public class ArticleServiceImpl implements ArticleService {
                 .orElse(List.of())
                 .stream()
                 .collect(Collectors.joining(","));
-//        List<Tag> tags = new ArrayList<>();
-//        if (req.getTagList() != null) {
-//            for (String name : req.getTagList()) {
-//                Tag tag = tagRepository.findByName(name).orElseGet(() -> {
-//                    Tag t = new Tag();
-//                    t.setName(name);
-//                    return tagRepository.save(t);
-//                });
-//                tags.add(tag);
-//            }
-//        }
 
         List<Tag> tags = Optional.ofNullable(req.getTagList())
                 .orElse(Collections.emptyList())
@@ -87,24 +76,9 @@ public class ArticleServiceImpl implements ArticleService {
         article.setCreatedAt(LocalDateTime.now());
         article.setUpdatedAt(LocalDateTime.now());
         article.setSlug(SlugUtil.slugify(req.getTitle())); // util simple
-        article.setIsLocked(req.isIslocked());
         article.setTags(tags);
 
         articleRepository.save(article);
-
-        // ---------- Collaborators ----------
-        boolean collaboratorsAdded = false;
-        if (req.getCollaboratorList() != null) {
-            List<User> collaborators = userRepository
-                    .findByEmailIn(req.getCollaboratorList());
-            collaboratorsAdded = !collaborators.isEmpty();
-            collaborators.forEach(u -> {
-                ArticleAuthor aa = new ArticleAuthor();
-                aa.setArticle(article);
-                aa.setUser(u);
-                articleAuthorRepository.save(aa);
-            });
-        }
 
         // ---------- Response ----------
         ArticleResponse
@@ -120,11 +94,65 @@ public class ArticleServiceImpl implements ArticleService {
                 .favoritesCount(0)
                 .author(/* map principal author si aplica */ null)
                 .favorited(false)
-                .islocked(article.isLocked())
-                .collaboratorsAdded(collaboratorsAdded)
                 .build();
 
         return new ArticleDTOResponse<ArticleResponse> (ar);
+    }
+
+    @Override
+    @Transactional
+    public ArticleDTOResponse<ArticleResponse> updateArticleBySlug(CurrentUser userLogin, String slug, ArticleCreateRequest req) {
+        Article article = articleRepository.findBySlug(slug)
+                .orElseThrow(() -> new ResourceNotFoundException("Article not found"));
+
+        if (!article.getAuthor().getId().equals(userLogin.getId())) {
+            throw new ResourceNotFoundException("You are not the author of this article");
+        }
+
+        if (req.getTitle() != null) {
+            article.setTitle(req.getTitle());
+            article.setSlug(SlugUtil.slugify(req.getTitle()));
+        }
+
+        if (req.getDescription() != null) {
+            article.setDescription(req.getDescription());
+        }
+
+        if (req.getBody() != null) {
+            article.setBody(req.getBody());
+        }
+
+        if (req.getTagList() != null) {
+            List<Tag> tags = req.getTagList().stream()
+                    .map(name -> tagRepository.findByName(name)
+                            .orElseGet(() -> {
+                                Tag t = new Tag();
+                                t.setName(name);
+                                return tagRepository.save(t);
+                            }))
+                    .collect(Collectors.toList());
+            article.setTags(tags);
+            article.setTagList(String.join(",", req.getTagList()));
+        }
+
+        article.setUpdatedAt(LocalDateTime.now());
+        articleRepository.save(article);
+
+        ArticleResponse response = ArticleResponse.builder()
+                .id(article.getId())
+                .slug(article.getSlug())
+                .title(article.getTitle())
+                .description(article.getDescription())
+                .body(article.getBody())
+                .createdAt(article.getCreatedAt())
+                .updatedAt(article.getUpdatedAt())
+                .tagList(Arrays.stream(article.getTagList().split(",")).toList())
+                .favoritesCount(0)
+                .author(null) // puedes mapear el User si lo necesitas
+                .favorited(false)
+                .build();
+
+        return new ArticleDTOResponse<>(response);
     }
 
     @Override
@@ -343,12 +371,8 @@ public class ArticleServiceImpl implements ArticleService {
                 .tagList(Arrays.stream(article.getTagList().split(",")).toList())
                 .author(authorDto)
                 .favoritesCount(article.getFavoritesCount())
-                .lockedAt(article.getLockedAt())
-                .lockedBy(null)
 //                .favorited(favorited)
                 .authors(List.of())  // ← if the article has multiple authors, you can fetch them here
-                .collaboratorList(List.of())
-                .islocked(article.getLockedAt() != null)
                 .build());
     }
 
