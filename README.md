@@ -44,7 +44,7 @@ Conduit App is a Medium.com-style blogging platform API that addresses the need 
 
 Describe the system from the user's perspective using user stories:
 
-✅ General User:
+General User:
 
 - As a visitor, I want to register for an account so that I can create and manage content.
 - As a user, I want to log in securely using JWT so that I can access personalized features.
@@ -52,7 +52,7 @@ Describe the system from the user's perspective using user stories:
 - As a user, I want to favorite articles so that I can easily find them later.
 - As a user, I want to follow other authors so that I can see articles from people I like.
 
-📝 Author:
+Author:
 
 - As an author, I want to create and publish articles so that I can share my thoughts with the community.
 - As an author, I want to edit or delete my own articles so that I can keep my content up to date.
@@ -60,60 +60,60 @@ Describe the system from the user's perspective using user stories:
 
 ## 3. Functional Requirements
 
-🔐 Authentication:
+Authentication:
 
 - Users can register with an email and password.
 - Users can log in securely and receive a JWT token.
 - JWT is used to secure all protected endpoints.
 - No role-based access control (RBAC) is implemented — all users have the same privileges.
 
-📝 Article Management:
+Article Management:
 
 - Authenticated users can create and delete articles.
 - Articles can be favorited by other users.
 - No update/edit or locking/approval mechanism is implemented yet.
 
-🧑‍🤝‍🧑 Social Features:
+Social Features:
 
 - Users can follow or unfollow other users.
 - A personalized feed is available showing articles from followed users.
 
-💬 Comments:
+Comments:
 
 - Commenting features are not available in the current implementation (not found in controller).
 
-🏷️ Tags:
+Tags:
 
 - Tags are auto-created when articles are posted.
 - There is no tag-based filtering in the current implementation.
 
-📁 Customer & Region Modules:
+Customer & Region Modules:
 
 - The app includes additional modules for Customer and Region management.
 - These are likely for demo, internal use, or extended business logic, not directly tied to blogging features.
 
 ## 4. Non-Functional Requirements
 
-🔐 Security:
+Security:
 
 - JWT is used to secure API endpoints.
 - No password hashing or encryption is currently applied.
 
-⚙️ Performance:
+Performance:
 
 - Backend is built with Spring Boot for fast REST API responses.
 - Basic pagination is applied to improve API efficiency.
 
-🔁 Reliability:
+Reliability:
 
 - Stateless API improves resilience.
 - Backend logic is grouped by clean controller-service layers.
 
-📈 Scalability:
+Scalability:
 
 -The system can be scaled by deploying multiple instances behind a load balancer.
 
-👤 Usability:
+Usability:
 
 - The API follows RESTful standards and returns consistent JSON responses.
 - Integrated with Swagger for easy API testing and documentation.
@@ -173,7 +173,7 @@ The project follows a standard layered architecture, which promotes separation o
 
 ### 5.3 Technologies Used
 
-🖥️ Backend:
+Backend:
 
 - Java 11
 - Spring Boot 2.5.7
@@ -184,7 +184,7 @@ The project follows a standard layered architecture, which promotes separation o
 - H2 (dev database)
 - Swagger (Springfox 3.0.0)
 
-🌐 Frontend:
+Frontend:
 
 - Angular 16
 - Nx Workspace
@@ -206,11 +206,13 @@ The project follows a standard layered architecture, which promotes separation o
 
 ## 6. Use Case Diagram(s)
 
+To be in the future : (Edit comment, Delete comment, Favorite article, Delete article).
+
 ![Use case diagram](uml-diagrams/UseCaseDiagram.png)
 
 ## 7. Use Case Descriptions
 
-🔐Register:
+Register:
 
 - Use Case Name: Register
 - Primary Actor(s): Guest
@@ -218,7 +220,7 @@ The project follows a standard layered architecture, which promotes separation o
 - Postconditions: New account is created
 - Main Success Scenario: User provides valid data → system stores user → success response returned
 
-🔐Login:
+Login:
 
 - Use Case Name: Login.
 - Primary Actor(s): Registered User.
@@ -226,7 +228,7 @@ The project follows a standard layered architecture, which promotes separation o
 - Postconditions: JWT token is returned.
 - Main Success Scenario: User enters credentials → system validates → token returned.
 
-📝Create Article:
+Create Article:
 
 - Use Case Name: Create Article.
 - Primary Actor(s): Logged-in User.
@@ -234,7 +236,7 @@ The project follows a standard layered architecture, which promotes separation o
 - Postconditions: Article is saved and listed.
 - Main Success Scenario: User submits article data → article is saved → confirmation returned.
 
-⭐Favorite Article:
+Favorite Article:
 
 - Use Case Name: Favorite Article.
 - Primary Actor(s): Logged-in User.
@@ -242,7 +244,7 @@ The project follows a standard layered architecture, which promotes separation o
 - Postconditions: Article marked as favorite.
 - Main Success Scenario: User clicks favorite → system updates favorite count.
 
-💬Comment on Article:
+Comment on Article:
 
 - Use Case Name: Comment on Article.
 - Primary Actor(s): Logged-in User.
@@ -250,7 +252,7 @@ The project follows a standard layered architecture, which promotes separation o
 - Postconditions: Comment added to article.
 - Main Success Scenario: User submits comment → system saves it → displayed under article.
 
-👤Follow User:
+Follow User:
 
 - Use Case Name: Follow User.
 - Primary Actor(s): Logged-in User.
@@ -264,19 +266,19 @@ The project follows a standard layered architecture, which promotes separation o
 
 ## 9. Sequence Diagrams
 
-1. Login Sequence:
+1.Login Sequence:
 
 ![Login Sequence](uml-diagrams/LoginSequence.png)
 
-2. Create Article:
+2.Create Article:
 
 ![Create Article](uml-diagrams/CreateArticle.png)
 
-3. Comment on Article:
+3.Comment on Article:
 
 ![Comment on Article](uml-diagrams/CommentOnArticle.png)
 
-4. Follow User:
+4.Follow User:
 
 ![Follow User](uml-diagrams/FollowUser.png)
 
@@ -289,11 +291,11 @@ Include relevant screenshots of your application's interface and features.
 
 ## 11. Installation & Deployment
 
-🔁 Clone the Repository:
+Clone the Repository:
     git clone <https://github.com/amineatm/Conduit-App.git>
     cd conduit-app
 
-🧱 Backend Setup (Spring Boot - Java):
+Backend Setup (Spring Boot - Java):
     1. Create MySQL database:
         CREATE DATABASE conduit_db;
     2. Configure the connection in application.properties or application.yml: eg. application.properties:
@@ -306,9 +308,9 @@ Include relevant screenshots of your application's interface and features.
         ./gradlew bootRun or (run it from your IDE).
 
     The backend will be accessible at:
-👉 <http://localhost:8092/swagger-ui/index.html/> (for API docs)
+ <http://localhost:8092/swagger-ui/index.html/> (for API docs)
 
-💻 Frontend Setup (Angular)
+Frontend Setup (Angular)
     1. Go to the frontend folder:
         cd frontend
     2. Install dependencies:
@@ -317,16 +319,15 @@ Include relevant screenshots of your application's interface and features.
         npm start
 
     The frontend will run at:
-👉 <http://localhost:4200/>
-
+ <http://localhost:4200/>
 
 ## 12. How to Use
 
-🔐 Login / Register:
+ Login / Register:
     1. Visit <http://localhost:4200/> (Frontend)
     2. Register a new user or log in using simple username, email and password.
 
-📝 Articles:
+ Articles:
     1. Create an Article:
     Go to “New Article” tab → Fill title, description, body → Submit.
     2. Edit/Delete Your Article:
@@ -334,16 +335,16 @@ Include relevant screenshots of your application's interface and features.
     3.Favorite Articles:
     Click the ❤️ icon on articles you like.
 
-💬 Comments:
+ Comments:
     Open any article → Add a comment at the bottom.
     You can also edit/delete your own comments.
 
-🧑‍🤝‍🧑 Social Features:
+ Social Features:
     Visit another user's profile.
     Click “Follow” or “Unfollow” to manage subscriptions.
     Your feed will show articles from followed users.
 
-🏷️ Tags:
+ Tags:
     Tags are auto-generated from articles.
     Click a tag to filter articles with that tag.
 
