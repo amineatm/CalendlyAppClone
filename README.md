@@ -120,7 +120,12 @@ Usability:
 
 ## 5. Architecture of Project
 
-------------------------------------------------------------------------------------------------------------------------
+The project uses a full-stack architecture:
+    - Frontend: Angular (UI, HTTP requests).
+    - Backend: Spring Boot (REST API, business logic).
+    - Database: MySQL (via JPA).
+
+Angular calls Spring Boot APIs, which interact with MySQL.
 
 ### 5.1 Overview
 
@@ -286,8 +291,26 @@ Follow User:
 
 ## 10. Screenshots
 
-Include relevant screenshots of your application's interface and features.
---------------------------------------------------------------------------------------------------------------
+1. Login Page:
+![Login Page](AppScreenshot/LoginPage.png)  
+
+2. Sign Up Page:
+![SignUp Page](AppScreenshot/SignUpPage.png)  
+
+3. Home Page:
+![Home Page](AppScreenshot/HomePage.png)  
+
+4. Update Profile Page:
+![Update Profile Page](AppScreenshot/UpdateProfilePage.png)  
+
+5. Post Article Page:
+![Post Article Page](AppScreenshot/PostArticlePage.png)  
+
+6. Roastr Page:
+![Roastr Page](AppScreenshot/RoastrPage.png)  
+
+7. User Profile Page:
+![Users Profile Page](AppScreenshot/UsersprofilePage.png)
 
 ## 11. Installation & Deployment
 
@@ -350,7 +373,13 @@ Frontend Setup (Angular)
 
 ## 13. Design Justification & Principles
 
---------------------------------------------------------------------
+We followed clean architecture principles to separate concerns:
+
+    -Modular structure: Divided into controller, service, repository, and DTO layers.
+    - Single Responsibility: Each class has one purpose (e.g., services handle business logic only).
+    - DRY & Reusability: Used DTOs and utility classes to avoid code duplication.
+    - Security: Used CurrentUser and Spring Security context for user authentication.
+    - Testability: Dependency injection makes unit testing easier.
 
 ## 14. Team Members
 
