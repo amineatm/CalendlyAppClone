@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.CREATED;
@@ -91,7 +90,7 @@ public class ArticleController {
     @GetMapping("{slug}")
     public ResponseEntity<ArticleDTOResponse<ArticleDto>> getArticleBySlug(
             @PathVariable String slug
-            ) {
+    ) {
         CurrentUser user = UserContext.get();
         ArticleDTOResponse<ArticleDto> response = articleService.getArticleBySlug(slug, user);
         return ResponseEntity.ok(response);
