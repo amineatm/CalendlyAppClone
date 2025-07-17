@@ -60,7 +60,7 @@ export const articleFeature = createFeature({
     })),
     on(articleActions.addCommentSuccess, (state, action) => {
       const comments: Comment[] = [action.comment, ...state.comments];
-      debugger
+      debugger;
       return { ...state, comments };
     }),
     on(articleActions.deleteCommentSuccess, (state, action) => {

@@ -45,7 +45,6 @@ export class ArticleComponent implements OnInit, OnDestroy {
   constructor(private readonly store: Store) {}
 
   ngOnInit() {
-
     this.store.dispatch(formsActions.setStructure({ structure }));
     this.store.dispatch(formsActions.setData({ data: '' }));
     this.store
@@ -59,11 +58,10 @@ export class ArticleComponent implements OnInit, OnDestroy {
         this.canModify = authors.findIndex((author) => author.username === auth.user.username) !== -1;
       });
 
-
     this.comments$.subscribe(([comments]) => {
-      debugger
+      debugger;
       console.log(comments);
-    })
+    });
   }
 
   follow(username: string) {
@@ -85,7 +83,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
     this.store.dispatch(articleActions.deleteComment(data));
   }
   submit(slug: string) {
-    debugger
+    debugger;
     this.store.dispatch(articleActions.addComment({ slug }));
   }
   updateForm(changes: any) {

@@ -293,31 +293,28 @@ Follow User:
 
 1. Login Page:
 
-  ![image-20250716203239304](AppScreenShot/LoginPage.png)  
+  <img src="AppScreenShot/LoginPage.png" alt="image-20250716203239304" style="zoom:50%;" />  
 
 2. Sign Up Page:
 
-  ![image-20250716203427874](AppScreenShot/SignUpPage.png)
+  <img src="AppScreenShot/SignUpPage.png" alt="image-20250716203427874" style="zoom:50%;" />
 
 3. Home Page:
 
-  ![image-20250716203557174](AppScreenShot/HomePage.png) 
+  <img src="AppScreenShot/HomePage.png" alt="image-20250716203557174" style="zoom:50%;" /> 
 
 4. Update Profile Page:
-  ![Update Profile Page](AppScreenshot/UpdateProfilePage.png)  
-
-  ![image-20250716204138432](/Users/leone/Library/Application Support/typora-user-images/image-20250716204138432.png)
+    <img src="AppScreenShot/UpdateProfilePage.png" alt="image-20250716204138432" style="zoom:50%;" />
 
 5. Post Article Page:
-  ![Post Article Page](AppScreenshot/PostArticlePage.png)  
-
+     <img src="AppScreenShot/PostArticlePage.png" alt="Post Article Page" style="zoom:50%;" />  
 6. Roastr Page:
-  ![Roastr Page](AppScreenshot/RoastrPage.png)  
 
-  ![image-20250716204210838](/Users/leone/Library/Application Support/typora-user-images/image-20250716204210838.png)
+<img src="AppScreenShot/RoastrPage.png" alt="image-20250717042622571" style="zoom:50%;" />  
 
 7. User Profile Page:
-  ![Users Profile Page](AppScreenshot/UsersprofilePage.png)
+
+<img src="AppScreenShot/UsersprofilePage.png" alt="image-20250717042716154" style="zoom:50%;" />
 
 ## 11. Installation & Deployment
 

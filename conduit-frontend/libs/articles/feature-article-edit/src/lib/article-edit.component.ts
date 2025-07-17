@@ -60,7 +60,7 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store.dispatch(formsActions.setStructure({ structure }));
-    debugger
+    debugger;
     this.store
       .select(articleQuery.selectData)
       .pipe(untilDestroyed(this))
