@@ -345,9 +345,8 @@ public class ArticleServiceImpl implements ArticleService {
                 .favoritesCount(article.getFavoritesCount())
                 .lockedAt(article.getLockedAt())
                 .lockedBy(null)
-//                .comments(comments)
 //                .favorited(favorited)
-                .authors(List.of())  // ← si tienes coautores, agrégalos aquí
+                .authors(List.of())  // ← if the article has multiple authors, you can fetch them here
                 .collaboratorList(List.of())
                 .islocked(article.getLockedAt() != null)
                 .build());
