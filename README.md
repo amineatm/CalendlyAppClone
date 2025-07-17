@@ -292,25 +292,32 @@ Follow User:
 ## 10. Screenshots
 
 1. Login Page:
-![Login Page](AppScreenshot/LoginPage.png)  
+
+  ![image-20250716203239304](AppScreenShot/LoginPage.png)  
 
 2. Sign Up Page:
-![SignUp Page](AppScreenshot/SignUpPage.png)  
+
+  ![image-20250716203427874](AppScreenShot/SignUpPage.png)
 
 3. Home Page:
-![Home Page](AppScreenshot/HomePage.png)  
+
+  ![image-20250716203557174](AppScreenShot/HomePage.png) 
 
 4. Update Profile Page:
-![Update Profile Page](AppScreenshot/UpdateProfilePage.png)  
+  ![Update Profile Page](AppScreenshot/UpdateProfilePage.png)  
+
+  ![image-20250716204138432](/Users/leone/Library/Application Support/typora-user-images/image-20250716204138432.png)
 
 5. Post Article Page:
-![Post Article Page](AppScreenshot/PostArticlePage.png)  
+  ![Post Article Page](AppScreenshot/PostArticlePage.png)  
 
 6. Roastr Page:
-![Roastr Page](AppScreenshot/RoastrPage.png)  
+  ![Roastr Page](AppScreenshot/RoastrPage.png)  
+
+  ![image-20250716204210838](/Users/leone/Library/Application Support/typora-user-images/image-20250716204210838.png)
 
 7. User Profile Page:
-![Users Profile Page](AppScreenshot/UsersprofilePage.png)
+  ![Users Profile Page](AppScreenshot/UsersprofilePage.png)
 
 ## 11. Installation & Deployment
 

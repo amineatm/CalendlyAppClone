@@ -34,12 +34,12 @@ const structure: Field[] = [
     placeholder: 'Enter Tags',
     validator: [],
   },
-  {
-    type: 'INPUT',
-    name: 'collaboratorList',
-    placeholder: 'Enter collaborators',
-    validator: [],
-  },
+  // {
+  //   type: 'INPUT',
+  //   name: 'collaboratorList',
+  //   placeholder: 'Enter collaborators',
+  //   validator: [],
+  // },
 ];
 
 @UntilDestroy()
@@ -60,6 +60,7 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.store.dispatch(formsActions.setStructure({ structure }));
+    debugger
     this.store
       .select(articleQuery.selectData)
       .pipe(untilDestroyed(this))
@@ -87,6 +88,6 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.store.dispatch(formsActions.initializeForm());
-    this.data.slug && this.store.dispatch(articleActions.unlockArticle({ slug: this.data.slug }));
+    // this.data.slug && this.store.dispatch(articleActions.unlockArticle({ slug: this.data.slug }));
   }
 }
